@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "mpl-documentos": {
+    "mpl-veterinaria": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/mpl-documentos",
+            "outputPath": "dist/veterinaria",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -66,10 +66,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "mpl-documentos:build:production"
+              "buildTarget": "mpl-veterinaria:build:production"
             },
             "development": {
-              "buildTarget": "mpl-documentos:build:development"
+              "buildTarget": "mpl-veterinaria:build:development"
             }
           },
           "defaultConfiguration": "development"
