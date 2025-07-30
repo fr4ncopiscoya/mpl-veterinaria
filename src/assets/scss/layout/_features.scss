@@ -32,11 +32,21 @@
 	height: 100%;
 
 	& .card {
+		height: 100%;
 		background-color: color(third, 1);
+
+		& .image-content{
+			height: 50%;
+			img{
+				height: 100%;
+				// height:287.8px;
+			}
+		}
 
 		& .card-body {
 			text-align: center;
 			background-color: color(third, 1);
+			// height: 50%;
 		}
 
 		&:hover>.card-body {

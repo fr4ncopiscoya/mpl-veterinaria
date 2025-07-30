@@ -12,18 +12,18 @@ interface carousel{
 })
 export class CarrouselComponent {
 
-  carouselOptions:carousel[] = [
+  carouselItems:carousel[] = [
     {
-      image: '../../../assets/images/mascota.jpg',
-      name: 'registra mascota',
+      image: '../../../../../assets/images/flayer-pets.jpg',
+      name: 'Mascotas',
     },
     {
-      image: '../../../assets/images/mascota.jpg',
-      name: 'registra adiestrador',
+      image: '../../../../../assets/images/flayer-adiestrador.jpg',
+      name: 'Adiestradores',
     },
     {
-      image: '../../../assets/images/mascota.jpg',
-      name: 'reserva una cita',
+      image: '../../../../../assets/images/flayer-veterinaria.jpg',
+      name: 'Reservar Citas',
     }
   ]
 

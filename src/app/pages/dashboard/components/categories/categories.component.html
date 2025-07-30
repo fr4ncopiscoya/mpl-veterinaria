@@ -1,1 +1,18 @@
-<p>categories works!</p>
+<div class="features-wrap">
+    @for (item of categoriesItems; track $index) {
+    <div class="feature is-revealing">
+        <div class="feature-inner">
+            <div class="card">
+                <div class="image-content">
+                    <img [src]="[item.image]" class="card-img-top" alt="...">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{item.title}}</h5>
+                    <p class="card-text">{{item.text}}</p>
+                    <a [href]='item.link' target="_blank" class="button button-primary">{{item.textButton}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+</div>

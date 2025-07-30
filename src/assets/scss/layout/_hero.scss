@@ -80,7 +80,7 @@
 	}
 }
 
-@include media( '>medium' ) {
+@include media( '>large' ) {
 
     .hero {
 		position: relative;
@@ -106,7 +106,12 @@
 	}
 
     .hero-copy {
-        padding-top: 88px;
+        // padding-top: 88px;
+		justify-content: center;
+		flex-direction: column;
+		align-items: center;
+		display: flex;
+		
         padding-right: 48px;
         min-width: 448px;
         max-width: 588px;
