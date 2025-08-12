@@ -1,16 +1,32 @@
 import { Routes } from '@angular/router';
+import InicioComponent from './pages/inicio/inicio.component';
 
 export const routes: Routes = [
     {
-        path: 'dashboard',
-        loadComponent: () => import('./pages/dashboard/dashboard.component'),
+        path: 'veterinaria',
+        loadComponent: () => import('./pages/template-hero/template-hero.component'),
+        children: [
+            {
+                path: 'inicio',
+                loadComponent: () => import('./pages/inicio/inicio.component'),
+            },
+            {
+                path: 'reserva',
+                loadComponent: () => import('./pages/reserva/reserva.component'),
+            },
+            {
+                path: '**',
+                redirectTo: 'inicio'
+            }
+        ]
     },
     {
-        path: 'reserva',
-        loadComponent: () => import('./pages/reservas/reserva/reserva.component'),
+        path: '',
+        redirectTo: 'veterinaria',
+        pathMatch: 'full'
     },
     {
         path: '**',
-        redirectTo: 'dashboard'
+        redirectTo: 'veterinaria'
     }
 ];

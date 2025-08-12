@@ -1,0 +1,18 @@
+h5 {
+    color: #fff;
+}
+
+::ng-deep .fecha-disponible .mat-calendar-body-cell-content {
+    background-color: #4caf50;
+    color: white;
+    border-radius: 50%;
+}
+
+@media (min-width: 1024px) {
+    .wizzard-content{
+        display: flex;
+        /* flex-direction: column; */
+        justify-content: space-between;
+        gap: 1rem;
+    }
+}

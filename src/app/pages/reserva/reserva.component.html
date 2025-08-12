@@ -1,0 +1,180 @@
+<section class="hero">
+    <div class="container">
+        <div class="d-flex">
+            <h3>AGENDA TU CITA CON NOSOTROS</h3>
+        </div>
+    </div>
+</section>
+
+<section class="feature-section">
+    <div class="container">
+        <div class="content-stepper">
+            <mat-horizontal-stepper [linear]="true" #stepper>
+                <!-- Paso 1: Fecha -->
+                <mat-step [stepControl]="dateFormGroup">
+                    <form [formGroup]="dateFormGroup">
+                        <!-- <ng-template matStepLabel>Seleccionar fecha y hora</ng-template> -->
+                        <h4 style="color: #000;">Selecciona fecha y hora</h4>
+
+                        <div class="p-3 wizzard-content">
+                            <div class="">
+                                <!-- Fecha -->
+                                <mat-form-field appearance="fill" class="w-100">
+                                    <mat-label>Fecha</mat-label>
+                                    <input matInput [matDatepicker]="picker" formControlName="date"
+                                        [matDatepickerFilter]="filterDates" />
+                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="">
+                                <!-- Hora -->
+                                <mat-form-field appearance="fill" class="w-100">
+                                    <mat-label>Hora disponible</mat-label>
+                                    <mat-select formControlName="time">
+                                        <mat-option *ngFor="let time of dataHorarios()" [value]="time">
+                                            {{ time }}
+                                        </mat-option>
+                                        <!-- <mat-option *ngFor="let time of availableTimeSlots" [value]="time">
+                                            {{ time }}
+                                        </mat-option> -->
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Servicio</mat-label>
+                                <mat-select formControlName="servicio">
+                                    <mat-option *ngFor="let servicio of dataServicios()" [value]="servicio.servicio_id">
+                                        {{servicio.servicio_descri}}
+                                        <!-- {{servicio.servicio_descri}} - S/.{{servicio.servicio_precio | number: '1.2-2'}} -->
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="actions">
+                            <button mat-raised-button color="primary" matStepperNext [disabled]="!dateFormGroup.valid">
+                                Siguiente
+                            </button>
+                        </div>
+                    </form>
+                </mat-step>
+
+                <!-- Paso 2: Datos personales -->
+                <mat-step [stepControl]="userFormGroup">
+                    <form [formGroup]="userFormGroup">
+                        <!-- <ng-template matStepLabel>Datos personales</ng-template> -->
+
+                        <div class="">
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Tipo Documento</mat-label>
+                                <mat-select formControlName="tipdoc">
+                                    <mat-option value="D">DNI</mat-option>
+                                    <mat-option value="E">CARNET EXT</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>N° Doc</mat-label>
+                                <input matInput formControlName="numdoc" type="number" #txtNumdoc
+                                    (blur)="searchPersona(txtNumdoc.value)">
+                            </mat-form-field>
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Nombres</mat-label>
+                                <input matInput formControlName="nombres">
+                            </mat-form-field>
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Apellidos</mat-label>
+                                <input matInput formControlName="apellidos">
+                            </mat-form-field>
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Dirección</mat-label>
+                                <input matInput formControlName="direccion">
+                            </mat-form-field>
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Correo</mat-label>
+                                <input matInput formControlName="correo">
+                            </mat-form-field>
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Telefono</mat-label>
+                                <input matInput formControlName="telefono">
+                            </mat-form-field>
+                        </div>
+                        <div>
+                            <button mat-button matStepperPrevious>Volver</button>
+                            <button mat-button matStepperNext [disabled]="!userFormGroup.valid">Siguiente</button>
+                        </div>
+
+                    </form>
+                </mat-step>
+
+                <!-- Paso 2: Datos mascota -->
+                <mat-step [stepControl]="petFormGroup">
+                    <form [formGroup]="petFormGroup">
+                        <!-- <ng-template matStepLabel>Datos Mascota</ng-template> -->
+
+                        <div class="wizzard-content">
+
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Nombre de la mascota</mat-label>
+                                <input matInput formControlName="nombre">
+                            </mat-form-field>
+    
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Especie</mat-label>
+                                <mat-select formControlName="especie" (selectionChange)="onEspecieChange($event.value)">
+                                    <mat-option value="1">PERRO</mat-option>
+                                    <mat-option value="2">GATO</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+    
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Raza</mat-label>
+                                <mat-select formControlName="raza">
+                                    <mat-option *ngFor="let raza of dataRazas()"
+                                        [value]="raza.raza_id">{{raza.raza_nombre}}</mat-option>
+                                </mat-select>
+                                <!-- <input matInput formControlName="raza"> -->
+                            </mat-form-field>
+                        </div>
+
+                        <!-- <mat-form-field appearance="fill">
+                            <mat-label>Servicio</mat-label>
+                            <mat-select formControlName="servicio">
+                                <mat-option value="dog">un</mat-option>
+                                <mat-option value="cat">monton</mat-option>
+                            </mat-select>
+                        </mat-form-field> -->
+
+                        <!-- <mat-form-field appearance="fill">
+                            <mat-label>Motivo</mat-label>
+                            <input matInput formControlName="motivo">
+                        </mat-form-field> -->
+
+                        <div>
+                            <button mat-button matStepperPrevious>Volver</button>
+                            <button mat-button matStepperNext [disabled]="!petFormGroup.valid">Siguiente</button>
+                        </div>
+                    </form>
+                </mat-step>
+
+                <!-- Paso 4: Pago -->
+                <mat-step>
+                    <!-- <ng-template matStepLabel>Pago</ng-template> -->
+                    <p><strong> RESUMEN DE LA RESERVA:</strong></p>
+                    <p><strong>Fecha:</strong> {{ dateFormGroup.value.date | date }}</p>
+                    <p><strong>Hora:</strong> {{ dateFormGroup.value.time }}</p>
+                    <p><strong>Persona:</strong> {{ userFormGroup.value.nombres }} {{ userFormGroup.value.apellidos }}
+                    </p>
+                    <p><strong>Correo:</strong> {{ userFormGroup.value.correo }}</p>
+                    <p><strong>Telefono:</strong> {{ userFormGroup.value.telefono }}</p>
+                    <p><strong>Mascota:</strong> {{ petFormGroup.value.nombre }}</p>
+                    <!-- <p><strong>Motivo:</strong> {{ petFormGroup.value.motivo }}</p> -->
+
+                    <button mat-button color="primary" (click)="finalize()">Pagar</button>
+                </mat-step>
+            </mat-horizontal-stepper>
+        </div>
+    </div>
+</section>

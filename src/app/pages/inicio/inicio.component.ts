@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
 import { CarrouselComponent } from './components/carousel/carousel.component';
 import { CategoriesComponent } from './components/categories/categories.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-dashboard',
-  imports: [CarrouselComponent, CategoriesComponent],
-  templateUrl: './dashboard.component.html',
+  selector: 'app-inicio',
+  imports: [CarrouselComponent, CategoriesComponent, RouterLink],
+  templateUrl: './inicio.component.html',
   styleUrl: '../../../assets/scss/style.scss'
-  // styleUrl: './dashboard.component.css'
+  // styleUrl: './inicio.component.css'
 })
-export default class DashboardComponent {
+export default class InicioComponent {
 
 }
