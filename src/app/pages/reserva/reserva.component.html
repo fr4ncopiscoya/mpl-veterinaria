@@ -66,13 +66,14 @@
                 <mat-step [stepControl]="userFormGroup">
                     <form [formGroup]="userFormGroup">
                         <!-- <ng-template matStepLabel>Datos personales</ng-template> -->
+                         <h4 style="color: #000;">Datos Persona</h4>
 
-                        <div class="">
+                        <div class="p-3">
                             <mat-form-field appearance="fill" class="w-100">
                                 <mat-label>Tipo Documento</mat-label>
                                 <mat-select formControlName="tipdoc">
-                                    <mat-option value="D">DNI</mat-option>
-                                    <mat-option value="E">CARNET EXT</mat-option>
+                                    <mat-option value="1">DNI</mat-option>
+                                    <mat-option value="2">CARNET EXT</mat-option>
                                 </mat-select>
                             </mat-form-field>
                             <mat-form-field appearance="fill" class="w-100">
@@ -113,6 +114,7 @@
                 <mat-step [stepControl]="petFormGroup">
                     <form [formGroup]="petFormGroup">
                         <!-- <ng-template matStepLabel>Datos Mascota</ng-template> -->
+                         <h4 style="color: #000;">Datos Mascota</h4>
 
                         <div class="wizzard-content">
 
@@ -135,22 +137,8 @@
                                     <mat-option *ngFor="let raza of dataRazas()"
                                         [value]="raza.raza_id">{{raza.raza_nombre}}</mat-option>
                                 </mat-select>
-                                <!-- <input matInput formControlName="raza"> -->
                             </mat-form-field>
                         </div>
-
-                        <!-- <mat-form-field appearance="fill">
-                            <mat-label>Servicio</mat-label>
-                            <mat-select formControlName="servicio">
-                                <mat-option value="dog">un</mat-option>
-                                <mat-option value="cat">monton</mat-option>
-                            </mat-select>
-                        </mat-form-field> -->
-
-                        <!-- <mat-form-field appearance="fill">
-                            <mat-label>Motivo</mat-label>
-                            <input matInput formControlName="motivo">
-                        </mat-form-field> -->
 
                         <div>
                             <button mat-button matStepperPrevious>Volver</button>
@@ -165,14 +153,14 @@
                     <p><strong> RESUMEN DE LA RESERVA:</strong></p>
                     <p><strong>Fecha:</strong> {{ dateFormGroup.value.date | date }}</p>
                     <p><strong>Hora:</strong> {{ dateFormGroup.value.time }}</p>
-                    <p><strong>Persona:</strong> {{ userFormGroup.value.nombres }} {{ userFormGroup.value.apellidos }}
-                    </p>
+                    <p><strong>Persona:</strong> {{ userFormGroup.value.nombres }}</p>
+                    <!-- <p><strong>Persona:</strong> {{ userFormGroup.value.nombres }} {{ userFormGroup.value.apellidos }}</p> -->
                     <p><strong>Correo:</strong> {{ userFormGroup.value.correo }}</p>
                     <p><strong>Telefono:</strong> {{ userFormGroup.value.telefono }}</p>
                     <p><strong>Mascota:</strong> {{ petFormGroup.value.nombre }}</p>
                     <!-- <p><strong>Motivo:</strong> {{ petFormGroup.value.motivo }}</p> -->
 
-                    <button mat-button color="primary" (click)="finalize()">Pagar</button>
+                    <button mat-button color="primary" (click)="saveReservaCita()">Pagar</button>
                 </mat-step>
             </mat-horizontal-stepper>
         </div>

@@ -88,7 +88,7 @@ export default class ReservaComponent implements OnInit {
   dataRazas = signal<any>('');
   // dataRazas = signal<string[]>([]);
 
-  tipoDocumento = signal<string>('D');
+  tipoDocumento = signal<number>(1);
 
 
   dateFormGroup: FormGroup;
@@ -114,7 +114,7 @@ export default class ReservaComponent implements OnInit {
       telefono: ['', [Validators.minLength(9), Validators.required]],
     });
 
-    this.userFormGroup.get('tipdoc')?.valueChanges.subscribe((tipo: string) => {
+    this.userFormGroup.get('tipdoc')?.valueChanges.subscribe((tipo: number) => {
       this.changeTipoDocumento(tipo);
     });
 
@@ -125,7 +125,6 @@ export default class ReservaComponent implements OnInit {
       // motivo: ['', Validators.required]
     });
 
-    // actualiza las horas cuando cambia la fecha
     this.dateFormGroup.get('date')?.valueChanges.subscribe((date: Date) => {
       const formatted = date.toISOString().split('T')[0];
       console.log('formatted? ', formatted);
@@ -146,8 +145,74 @@ export default class ReservaComponent implements OnInit {
     return this.dataFechasDisponibles().includes(dateStr);
   };
 
-  finalize() {
+  saveReservaCita() {
     
+    const rawUser = this.userFormGroup.getRawValue();
+    const rawPet = this.petFormGroup.getRawValue();
+    const rawDate = this.dateFormGroup.getRawValue();
+
+    const post = {
+      tipdoc_id: rawUser.tipdoc,
+      persona_numdoc: rawUser.numdoc,
+      persona_nombre: rawUser.nombres,
+      persona_apepaterno: rawUser.apellidos?.split(' ')[0] || '',
+      persona_apematerno: rawUser.apellidos?.split(' ')[1] || '',
+      cliente_direccion: rawUser.direccion,
+      cliente_correo: rawUser.correo,
+      cliente_telefono: rawUser.telefono,
+      mascota_nombre: rawPet.nombre,
+      especie_id: rawPet.especie,
+      raza_id: rawPet.raza,
+      servicio_id: rawDate.servicio,
+      fecha_cita: this.formatFecha(rawDate.date),
+      hora_cita: rawDate.time,
+      estado_id: 1,
+      observaciones: 'Observaciones aquí'
+    };
+
+    console.log('POST enviado:', post);
+
+    this.veterinariaService.postReservarCita(post).subscribe({
+      next: (res) => {
+        console.log('Reserva creada:', res);
+        this.sweetAlertService.success('', res.mensaje)
+      },
+      error: (error) => {
+        console.error('Error al crear reserva: ', error);
+        this.sweetAlertService.error('', error)
+      }
+    });
+  }
+
+
+  // Función para formatear la fecha sin la parte horaria
+  private formatFecha(fecha: Date): string {
+    if (!fecha) return '';
+    return fecha.toISOString().split('T')[0]; // yyyy-MM-dd
+  }
+
+  finalize() {
+    if (this.dateFormGroup.invalid || this.userFormGroup.invalid || this.petFormGroup.invalid) {
+      console.warn('Faltan campos obligatorios');
+      return;
+    }
+
+    // Combinar todos los datos
+    const payload = {
+      ...this.dateFormGroup.getRawValue(),
+      date: this.formatDate(this.dateFormGroup.value.date),
+      ...this.userFormGroup.getRawValue(),
+      ...this.petFormGroup.getRawValue()
+    };
+
+    console.log('Payload listo para SPU:', payload);
+  }
+
+  formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   getFechasDisponibles() {
@@ -218,7 +283,7 @@ export default class ReservaComponent implements OnInit {
     this.getRazas(especieId);
   }
 
-  changeTipoDocumento(value: string) {
+  changeTipoDocumento(value: number) {
     this.tipoDocumento.set(value);
 
     this.userFormGroup.patchValue({
@@ -228,7 +293,7 @@ export default class ReservaComponent implements OnInit {
       direccion: '',
     });
 
-    if (value !== 'D') {
+    if (value != 1) {
       this.userFormGroup.get('direccion')?.enable();
     } else {
       this.userFormGroup.get('direccion')?.disable();
@@ -242,34 +307,21 @@ export default class ReservaComponent implements OnInit {
   searchPersona(numdoc: string) {
     const tipDoc = this.userFormGroup.get('tipdoc')?.value;
 
-    if ((tipDoc === 'D' && numdoc.length === 8)) {
+    if ((tipDoc == 1 && numdoc.length === 8)) {
       this.getReniec(numdoc);
-    } else if ((tipDoc === 'D' && numdoc.length > 5 && numdoc.length < 8)) {
+    } else if ((tipDoc == 1 && numdoc.length > 5 && numdoc.length < 8)) {
       this.sweetAlertService.info('Opps!', 'El documento debe tener 8 digitos')
     } else {
       console.warn('Documento Invalido');
     }
-    if ((tipDoc === 'E' && numdoc.length === 9)) {
+    if ((tipDoc == 2 && numdoc.length === 9)) {
       this.getCExtranjeria(numdoc);
-    } else if ((tipDoc === 'E' && numdoc.length > 5 && numdoc.length < 9)) {
+    } else if ((tipDoc == 2 && numdoc.length > 5 && numdoc.length < 9)) {
       this.sweetAlertService.info('Opps!', 'El documento debe tener 9 digitos')
     } else {
       console.warn('Documento Invalido');
     }
   }
-
-  // getServicios() {
-  //   const post = {}
-  //   this.veterinariaService.getServicios(post).subscribe({
-  //     next: (res) => {
-  //       console.log('res: ', res);
-  //       this.dataServicios.set(res);
-  //     },
-  //     error: (error) => {
-  //       console.log('error: ', error);
-  //     }
-  //   })
-  // }
 
   getReniec(query: string) {
     const post = {

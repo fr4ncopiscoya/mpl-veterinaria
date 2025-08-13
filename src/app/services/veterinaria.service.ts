@@ -34,6 +34,9 @@ export class VeterinariaService {
   getRazas(data: any): Observable<any> {
     return this.http.post(`${environment.apiBackend}/veterinaria/sel-razas`, data);
   }
+  postReservarCita(data: any): Observable<any> {
+    return this.http.post(`${environment.apiBackend}/veterinaria/ins-reserva`, data);
+  }
   // getServicios(data: any): Observable<any> {
   //   return this.http.post(`${environment.apiBackend}/veterinaria/sel-servicios`, data);
   // }
