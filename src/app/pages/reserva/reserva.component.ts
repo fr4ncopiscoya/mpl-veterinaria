@@ -170,12 +170,9 @@ export default class ReservaComponent implements OnInit {
       observaciones: 'Observaciones aquí'
     };
 
-    console.log('POST enviado:', post);
-
     this.veterinariaService.postReservarCita(post).subscribe({
       next: (res) => {
-        console.log('Reserva creada:', res);
-        this.sweetAlertService.success('', res.mensaje)
+        this.sweetAlertService.success('', res[0].mensaje)
       },
       error: (error) => {
         console.error('Error al crear reserva: ', error);
@@ -185,27 +182,9 @@ export default class ReservaComponent implements OnInit {
   }
 
 
-  // Función para formatear la fecha sin la parte horaria
   private formatFecha(fecha: Date): string {
     if (!fecha) return '';
-    return fecha.toISOString().split('T')[0]; // yyyy-MM-dd
-  }
-
-  finalize() {
-    if (this.dateFormGroup.invalid || this.userFormGroup.invalid || this.petFormGroup.invalid) {
-      console.warn('Faltan campos obligatorios');
-      return;
-    }
-
-    // Combinar todos los datos
-    const payload = {
-      ...this.dateFormGroup.getRawValue(),
-      date: this.formatDate(this.dateFormGroup.value.date),
-      ...this.userFormGroup.getRawValue(),
-      ...this.petFormGroup.getRawValue()
-    };
-
-    console.log('Payload listo para SPU:', payload);
+    return fecha.toISOString().split('T')[0];
   }
 
   formatDate(date: Date): string {
