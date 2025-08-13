@@ -4,7 +4,25 @@ import InicioComponent from './pages/inicio/inicio.component';
 export const routes: Routes = [
     {
         path: 'veterinaria',
-        loadComponent: () => import('./pages/template-hero/template-hero.component'),
+        loadComponent: () => import('./pages/templates/hero/hero.component'),
+        children: [
+            {
+                path: 'inicio',
+                loadComponent: () => import('./pages/inicio/inicio.component'),
+            },
+            {
+                path: 'reserva',
+                loadComponent: () => import('./pages/reserva/reserva.component'),
+            },
+            {
+                path: '**',
+                redirectTo: 'inicio'
+            }
+        ]
+    },
+    {
+        path: 'admin',
+        loadComponent: () => import('./pages/templates/admin/admin.component'),
         children: [
             {
                 path: 'inicio',
