@@ -1,1 +1,28 @@
-<p>admin works!</p>
+<div id="layout-wrapper">
+    <!-- menu -->
+    <app-menu></app-menu>
+    <!-- end menu -->
+
+    <!-- navbar -->
+    <app-navbar></app-navbar>
+    <!-- end navbar -->
+
+    <!-- content page -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                            <h4 class="mb-sm-0">{{pageTitle}}</h4>
+                        </div>
+                    </div>
+
+                    <router-outlet></router-outlet>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end content page -->
+</div>

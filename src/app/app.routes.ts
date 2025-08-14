@@ -26,15 +26,21 @@ export const routes: Routes = [
         children: [
             {
                 path: 'inicio',
-                loadComponent: () => import('./pages/inicio/inicio.component'),
+                loadComponent: () => import('./pages/dashboard/dashboard.component'),
             },
             {
-                path: 'reserva',
-                loadComponent: () => import('./pages/reserva/reserva.component'),
+                path: 'historial',
+                loadComponent: () => import('./pages/admin/reserva-historial/reserva-historial.component'),
+                data: { title: 'HISTORIAL DE RESERVAS' }
             },
             {
                 path: '**',
                 redirectTo: 'inicio'
+            },
+            {
+                path: '',
+                redirectTo: 'inicio',
+                pathMatch: 'full'
             }
         ]
     },

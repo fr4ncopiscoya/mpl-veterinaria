@@ -1,0 +1,153 @@
+<!-- ========== App Menu ========== -->
+<div class="app-menu navbar-menu">
+    <!-- LOGO -->
+    <div class="navbar-brand-box">
+        <a href="index.html" class="logo logo-dark">
+            <span class="logo-sm">
+                <img src="assets/images/logo-sm.png" alt="" height="26">
+            </span>
+            <span class="logo-lg">
+                <img src="assets/images/logo-mpl-black.png" class="w-100" alt="" height="100">
+            </span>
+        </a>
+        <a href="index.html" class="logo logo-light">
+            <span class="logo-sm">
+                <img src="assets/images/logo-sm.png" alt="" height="26">
+            </span>
+            <span class="logo-lg">
+                <img src="assets/images/logo-light.png" alt="" height="26">
+            </span>
+        </a>
+        <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
+            id="vertical-hover">
+            <i class="ri-record-circle-line"></i>
+        </button>
+    </div>
+
+    <div id="scrollbar">
+        <div class="container-fluid">
+
+            <div id="two-column-menu">
+            </div>
+          
+
+
+            <ul class="navbar-nav" id="navbar-nav">
+
+                <li class="menu-title"><span data-key="t-menu">Menu</span></li>
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link menu-link"> <i class="bi bi-speedometer2"></i> <span
+                            data-key="t-dashboard">Inicio</span> </a>
+                </li>
+
+
+                <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages">Admin</span></li>
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#sidebarAdmin" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="sidebarAdmin">
+                        <i class="bi bi-lock-fill"></i> <span data-key="t-authentication">Reservas</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="sidebarAdmin">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a [routerLink]="['/admin/historial']" routerLinkActive="active" class="nav-link"
+                                    data-key="t-starter"> Historial</a>
+                            </li>
+                            <li class="nav-item">
+                                <a [routerLink]="['/pide/reniec']" routerLinkActive="active" class="nav-link"
+                                    data-key="t-starter"> Actualizar Credenciales Reniec </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages">Pages</span></li>
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#sidebarAuth" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="sidebarAuth">
+                        <i class="bi bi-person-circle"></i> <span data-key="t-authentication">Identificación</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="sidebarAuth">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a [routerLink]="['/pide/reniec']" routerLinkActive="active" class="nav-link"
+                                    data-key="t-starter"> Reniec </a>
+                            </li>
+                            <li class="nav-item">
+                                <a [routerLink]="['/pide/cextranjeria']" routerLinkActive="active" class="nav-link"
+                                    data-key="t-starter"> Carnet de Extranjeria</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#sidebarProperties" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="sidebarProperties">
+                        <i class="bi bi-journal-medical"></i> <span data-key="t-properties">Propiedades</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="sidebarProperties">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="#sidebarSunarp" class="nav-link" data-bs-toggle="collapse" role="button"
+                                    aria-expanded="false" aria-controls="sidebarSunarp" data-key="t-signin"> Sunarp
+                                </a>
+                                <div class="collapse menu-dropdown" id="sidebarSunarp">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a [routerLink]="['/pide/sunarp/bienes']" class="nav-link"
+                                                data-key="t-basic">
+                                                Titularidad Bienes
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a [routerLink]="['/pide/sunarp/vehicular']" class="nav-link"
+                                                data-key="t-basic-2">
+                                                Registro Vehicular</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a [routerLink]="['/pide/sunedu']" routerLinkActive="active" class="nav-link"
+                                    data-key="t-starter"> Sunedu </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#sidebarRecord" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="sidebarRecord">
+                        <i class="bi bi-incognito"></i> <span data-key="t-pages">Antecedentes</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="sidebarRecord">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a [routerLink]="['/pide/antecedentes/policiales']" class="nav-link" data-key="t-team">
+                                    Antecedentes Policiales</a>
+                            </li>
+                            <li class="nav-item">
+                                <a [routerLink]="['/pide/antecedentes/penales']" routerLink="active" class="nav-link"
+                                    data-key="t-team"> Antecedentes Penales </a>
+                            </li>
+                            <li class="nav-item">
+                                <a [routerLink]="['/pide/antecedentes/judiciales']" class="nav-link" data-key="t-team">
+                                    Antecedentes Judiciales</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+        <!-- Sidebar -->
+    </div>
+
+    <div class="sidebar-background"></div>
+</div>
+
+<!-- Vertical Overlay-->
+<div class="vertical-overlay"></div>

@@ -1,13 +1,15 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 interface carousel{
   image: string,
   name: string,
+  link: string
 }
 
 @Component({
   selector: 'app-carrousel',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './carousel.component.html',
 })
 export class CarrouselComponent {
@@ -16,14 +18,17 @@ export class CarrouselComponent {
     {
       image: '../../../../../assets/images/flayer-pets.jpg',
       name: 'Mascotas',
+      link: '/veterinaria/reserva'
     },
     {
       image: '../../../../../assets/images/flayer-adiestrador.jpg',
       name: 'Adiestradores',
+      link: ''
     },
     {
       image: '../../../../../assets/images/flayer-veterinaria.jpg',
       name: 'Reservar Citas',
+      link: ''
     }
   ]
 
