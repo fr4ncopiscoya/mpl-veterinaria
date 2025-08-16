@@ -25,18 +25,22 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/@ng-select/ng-select/themes/default.theme.css",
+              "@angular/material/prebuilt-themes/azure-blue.css",
               "src/assets/css/bootstrap.min.css",
               "src/assets/css/app.min.css",
               "src/assets/css/icons.min.css",
               "src/assets/css/custom.min.css",
               "src/assets/libs/leaflet/leaflet.css",
-              "@angular/material/prebuilt-themes/azure-blue.css",
               "src/styles.css"
             ],
             "scripts": [
               "/src/assets/js/app.js",
-              "/src/assets/libs/bootstrap/js/bootstrap.bundle.min.js",
+              "/src/assets/js/pages/gridjs.init.js",
+              "/src/assets/libs/gridjs/gridjs.umd.js",
               "/src/assets/js/layout.js",
+              "/src/assets/libs/simplebar/simplebar.min.js",
+              "/src/assets/libs/bootstrap/js/bootstrap.bundle.min.js",
               "/src/assets/js/plugins.js"
             ]
           },

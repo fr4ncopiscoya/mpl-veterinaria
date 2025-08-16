@@ -13,7 +13,7 @@ interface servicios {
 })
 export class ServiciosComponent {
 
-  categoriesItems: servicios[] = [
+  serviciosItem: servicios[] = [
     {
       image: '../../../../../assets/images/mascota.jpg',
       title: 'Registra a tu Mascota (carnet digital)',

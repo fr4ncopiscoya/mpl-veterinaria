@@ -1,3 +1,72 @@
+<div class="row mb-sm-4">
+    <div class="col-md-3">
+        <label for="validationDefault04" class="form-label">Servicio</label>
+        <select class="form-select" (change)="changeTipoServicio($any($event.target).value)">
+            <option value="0">Seleccionar</option>
+            <option *ngFor="let servicio of dataServicios()" [value]="servicio.servicio_id">{{servicio.servicio_descri}}
+            </option>
+        </select>
+        <!-- <select class="form-select" (change)="changeTipoPersona($any($event.target).value)">
+            <option value="N">Persona Natural</option>
+            <option value="J">Persona Jurídica</option>
+        </select> -->
+    </div>
+    <!-- <ng-container *ngIf="tipoPersona() === 'N'"> -->
+    <div class="col-sm-2">
+        <label class="form-label">Fecha Inicio</label>
+        <input type="date" class="form-control" [value]="fechaInicio()"
+            (input)="fechaInicio.set($any($event.target).value)">
+    </div>
+
+    <div class="col-sm-2">
+        <label class="form-label">Fecha Fin</label>
+        <input type="date" class="form-control" [value]="fechaFin()" (input)="fechaFin.set($any($event.target).value)">
+    </div>
+
+    <div class="col-sm-2">
+        <label class="form-label">Fecha Cita</label>
+        <input type="date" class="form-control" [value]="fechaCita()"
+            (input)="fechaCita.set($any($event.target).value)">
+    </div>
+    <div class="col-sm-3 col-md-3">
+        <label class="form-label">Estado</label>
+        <select class="form-select" (change)="changeTipoEstado($any($event.target).value)">
+            <option value="0">Seleccionar</option>
+            <option value="1">Pendiente</option>
+            <option value="2">Atendida</option>
+            <option value="3">Cancelada</option>
+        </select>
+    </div>
+
+
+    <!-- <div class="col-md-3">
+            <label class="form-label">Ap.Materno</label>
+            <input type="text" class="form-control" [value]="apeMaterno()"
+                (input)="apeMaterno.set($any($event.target).value.toUpperCase())">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Nombres</label>
+            <input type="text" class="form-control" [value]="nombres()"
+                (input)="nombres.set($any($event.target).value.toUpperCase())">
+        </div> -->
+    <!-- <div class="col-sm-7">
+                <app-result-alert></app-result-alert>
+            </div> -->
+</div>
+
+<div class="row mb-sm-4">
+    <div class="col-sm-2 w-auto">
+        <button type="button" class="btn btn-primary btn-label" (click)="searchReservas()">
+            <i class="ri-search-line label-icon align-middle fs-16 me-2"></i> Enviar
+        </button>
+    </div>
+    <div class="col-sm-2">
+        <button type="button" class="btn btn-success btn-label" (click)="resetFields()">
+            <i class="ri-brush-2-line label-icon align-middle fs-16 me-2"></i> Limpiar
+        </button>
+    </div>
+</div>
+
 <!-- GRID TABLE -->
 <div class="row">
     <div class="col-lg-12">

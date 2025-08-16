@@ -7948,7 +7948,7 @@ th.gridjs-th-sort:focus,th.gridjs-th-sort:hover{
 .gridjs-pagination .gridjs-pages button{
     margin-left:.3rem;
     border-radius:.25rem!important;
-    border:1px solid var(--tb-border-color);
+    border:1px solid var(--tb-border-color) !important;
     background-color:var(--tb-secondary-bg);
     color:var(--tb-link-color)
 }
@@ -7971,7 +7971,7 @@ th.gridjs-th-sort:focus,th.gridjs-th-sort:hover{
     background-color:transparent
 }
 .gridjs-pagination .gridjs-pages button.gridjs-currentPage{
-    background-color:#438eff;
+    background-color:#438eff !important;
     color:#fff;
     border-color:#438eff;
     font-weight:500
@@ -7996,7 +7996,7 @@ input.gridjs-input{
     background-color:var(--tb-secondary-bg);
     color:var(--tb-body-color);
     line-height:1.5;
-    padding:.6rem .9rem .6rem 2.025rem;
+    padding:.6rem .9rem .6rem 2.025rem !important;
     border-radius:.25rem;
     font-size:.9063rem
 }

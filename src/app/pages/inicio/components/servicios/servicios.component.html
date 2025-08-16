@@ -1,16 +1,20 @@
-<div class="col-xxl-4 col-lg-6">
-    <div class="card card-overlay">
-        <img class="card-img img-fluid" src="assets/images/small/img-12.jpg" alt="Card image">
-        <div class="card-img-overlay p-0 d-flex flex-column">
-            <div class="card-header bg-transparent">
-                <h4 class="card-title text-white mb-0">Consulta General</h4>
-            </div>
-            <div class="card-body">
-                <p class="card-text text-white mb-2">
-                    - Examen físico completo del paciente
-                    - Evaluente de signos vitales
-                </p>
+<div class="row">
+    @for (item of serviciosItem; track $index) {
+    <div class="col-xxl-4 col-lg-6">
+        <div class="card card-overlay">
+
+            <img class="card-img img-fluid" [src]="item.image" alt="Card image">
+            <div class="card-img-overlay p-0 d-flex flex-column">
+                <div class="card-header bg-transparent">
+                    <h4 class="card-title text-white mb-0">{{item.title}}</h4>
+                </div>
+                <div class="card-body">
+                    <p class="card-text text-white mb-2">
+                        {{item.text}}
+                    </p>
+                </div>
             </div>
         </div>
-    </div>
-</div><!-- end col -->
+    </div><!-- end col -->
+    }
+</div>

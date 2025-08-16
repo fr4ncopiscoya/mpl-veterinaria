@@ -1,3 +1,6 @@
+@import 'assets/css/app.min.css';
+@import 'assets/libs/gridjs/theme/mermaid.min.css';
+
 body {
   color: #7487A3;
   font-size: 1rem;
