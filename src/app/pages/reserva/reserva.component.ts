@@ -11,7 +11,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { CommonModule, DatePipe } from '@angular/common';
 import { VeterinariaService } from '../../services/veterinaria.service';
 import { SweetAlertService } from '../../services/sweet-alert.service';
+import { PaymentService, PaymentPayload } from '../../services/payment.service';
 
+declare const VisanetCheckout: any;
 
 interface DatosPersona {
   apPrimer: string;
@@ -25,7 +27,6 @@ interface DatosPersona {
 }
 
 interface DatosPersonaExtranjera {
-
   apepaterno: string,
   apematerno: string,
   nombres: string,
@@ -97,7 +98,12 @@ export default class ReservaComponent implements OnInit {
 
   availableTimeSlots: string[] = [];
 
-  constructor(private fb: FormBuilder) {
+  // Variables Horny
+  reservaAmount: number = 50.00; // Monto valor de la reserva
+  isReadyToPay: boolean = false; // Esto se activa cuando ya estas ready para pagar
+  purchaseNumber: string = '123456' // Aqui pones el ID de la Reserva  
+
+  constructor(private fb: FormBuilder, private paymentService: PaymentService) {
     this.dateFormGroup = this.fb.group({
       date: [null, Validators.required],
       time: [null, Validators.required],
@@ -107,9 +113,9 @@ export default class ReservaComponent implements OnInit {
     this.userFormGroup = this.fb.group({
       tipdoc: ['', Validators.required],
       numdoc: ['', Validators.required],
-      nombres: [{ value: '', disabled: true }, Validators.required],
-      apellidos: [{ value: '', disabled: true }, Validators.required],
-      direccion: [{ value: '', disabled: true }, Validators.required],
+      nombres: [{ value: '', disabled: false }, Validators.required],
+      apellidos: [{ value: '', disabled: false }, Validators.required],
+      direccion: [{ value: '', disabled: false }, Validators.required],
       correo: ['', [Validators.required, Validators.email]],
       telefono: ['', [Validators.minLength(9), Validators.required]],
     });
@@ -181,7 +187,6 @@ export default class ReservaComponent implements OnInit {
     });
   }
 
-
   private formatFecha(fecha: Date): string {
     if (!fecha) return '';
     return fecha.toISOString().split('T')[0];
@@ -228,7 +233,6 @@ export default class ReservaComponent implements OnInit {
       }
     });
   }
-
 
   getServiciosDisponibles(date: string) {
     const post = {
@@ -403,5 +407,70 @@ export default class ReservaComponent implements OnInit {
     }
   }
 
+  // Cambios Horny
 
+  private configureNiubiz(sessionToken: string): void {
+    VisanetCheckout.configure({
+      action: 'https://localhost:4200/veterinaria/success-payment/' + this.purchaseNumber,
+      sessiontoken: sessionToken,
+      channel: 'web',
+      merchantid: '456879852',
+      purchasenumber: this.purchaseNumber,
+      amount: this.reservaAmount,
+      expirationminutes: '20',
+      timeouturl: 'about:blank',
+      merchantlogo: '/assets/images/logo.png',
+      formbuttoncolor: '#000000',
+      onsuccess: this.handleSuccess.bind(this), // Usamos .bind(this) para mantener el contexto
+      onerror: (error: any) => {
+        console.error('Error en el checkout de Niubiz:', error);
+        alert('Ocurrió un error con el pago. Por favor, revisa tus datos.');
+      }
+    });
+  }
+
+  paymentProcessInit(){
+    this.paymentService.getSessionToken(this.reservaAmount).subscribe({
+      next: (response) => {
+        this.configureNiubiz(response.sessionToken);
+        this.isReadyToPay = true;
+        VisanetCheckout.open();
+        console.log('Token de sesión obtenido y Niubiz configurado.');
+      },
+      error: (err) => {
+        console.error('Error al obtener el token de sesión', err);
+        alert('No se pudo iniciar el proceso de pago. Por favor, recarga la página.');
+      }
+    });
+  }
+
+  openPaymentForm(): void {
+    this.paymentProcessInit();
+  }
+
+  private handleSuccess(data: any): void {
+    const payload: PaymentPayload = {
+      transactionToken: data.transactionToken,
+      purchaseNumber: this.purchaseNumber,
+      amount: this.reservaAmount
+    };
+
+    this.paymentService.processFinalPayment(payload).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.saveReservaCita();
+          console.log('¡Pago exitoso!', response.data);
+          // Aquí rediriges a una página de éxito
+          // this.router.navigate(['/pago-exitoso']);
+        } else {
+          console.error('El pago falló en el backend', response.data);
+          this.sweetAlertService.error('', 'El pago no pudo ser procesado por el banco. Intenta con otra tarjeta.')
+        }
+      },
+      error: (err) => {
+        console.error('Error de comunicación al procesar el pago final', err);
+        this.sweetAlertService.error('', err)
+      }
+    });
+  }
 }
