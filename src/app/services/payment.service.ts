@@ -14,7 +14,8 @@ export interface PaymentPayload {
 })
 export class PaymentService {
   // Las URLs de tu API de Laravel
-  private apiUrl = 'http://localhost:8000/niubiz'; // URL base
+  private apiUrl = 'http://127.0.0.1:8000/niubiz'; // URL base
+  // private apiUrl = 'http://localhost:4200/niubiz'; // URL base
 
   constructor(private http: HttpClient) { }
 

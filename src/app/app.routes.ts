@@ -9,6 +9,7 @@ export const routes: Routes = [
             {
                 path: 'inicio',
                 loadComponent: () => import('./pages/inicio/inicio.component'),
+                // loadComponent: () => import('./pages/reserva/success-payment/success-payment.component'),
             },
             {
                 path: 'reserva',
@@ -43,6 +44,11 @@ export const routes: Routes = [
                 pathMatch: 'full'
             }
         ]
+    },
+    {
+        path: 'success-payment',
+        // path: 'success-payment/:purchaseNumber',
+        loadComponent: () => import('./pages/reserva/success-payment/success-payment.component'),
     },
     {
         path: '',

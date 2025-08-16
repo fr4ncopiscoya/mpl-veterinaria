@@ -133,7 +133,6 @@ export default class ReservaComponent implements OnInit {
 
     this.dateFormGroup.get('date')?.valueChanges.subscribe((date: Date) => {
       const formatted = date.toISOString().split('T')[0];
-      console.log('formatted? ', formatted);
 
       this.getHorariosDisponibles(formatted);
       this.getServiciosDisponibles(formatted);
