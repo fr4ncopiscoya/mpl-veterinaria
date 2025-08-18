@@ -430,7 +430,7 @@ export default class ReservaComponent implements OnInit {
 
   private configureNiubiz(sessionToken: string): void {
     VisanetCheckout.configure({
-      action: 'http://localhost:4200/veterinaria/success-payment/' + this.purchaseNumber(),
+      action: 'http://localhost:8000/reservas/actualizar-pago/' + this.purchaseNumber(),
       sessiontoken: sessionToken,
       channel: 'web',
       merchantid: '650236756',
@@ -440,7 +440,10 @@ export default class ReservaComponent implements OnInit {
       timeouturl: 'about:blank',
       merchantlogo: '/assets/images/logo.png',
       formbuttoncolor: '#000000',
-      onsuccess: this.handleSuccess.bind(this), // Usamos .bind(this) para mantener el contexto
+      // onsuccess: this.handleSuccess.bind(this), // Usamos .bind(this) para mantener el contexto
+      onsuccess: () => {
+        window.location.href = '/veterinaria/success-payment/' + this.purchaseNumber();
+      },
       onerror: (error: any) => {
         console.error('Error en el checkout de Niubiz:', error);
         alert('Ocurrió un error con el pago. Por favor, revisa tus datos.');
