@@ -46,8 +46,8 @@ export const routes: Routes = [
         ]
     },
     {
-        path: 'success-payment',
-        // path: 'success-payment/:purchaseNumber',
+        // path: 'success-payment',
+        path: 'veterinaria/success-payment/:purchaseNumber',
         loadComponent: () => import('./pages/reserva/success-payment/success-payment.component'),
     },
     {

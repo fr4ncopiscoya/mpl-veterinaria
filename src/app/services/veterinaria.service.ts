@@ -43,6 +43,9 @@ export class VeterinariaService {
   updReservaEstado(data: any): Observable<any> {
     return this.http.post(`${environment.apiBackend}/veterinaria/upd-reservaestado`, data);
   }
+  updLiquidacionPago(data: any): Observable<any> {
+    return this.http.post(`${environment.apiBackend}/veterinaria/upd-liquidacionpago`, data);
+  }
   getServicios(data: any): Observable<any> {
     return this.http.post(`${environment.apiBackend}/veterinaria/sel-allservicios`, data);
   }

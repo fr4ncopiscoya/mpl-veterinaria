@@ -99,9 +99,13 @@ export default class ReservaComponent implements OnInit {
   availableTimeSlots: string[] = [];
 
   // Variables Horny
-  reservaAmount: number = 50.00; // Monto valor de la reserva
-  isReadyToPay: boolean = false; // Esto se activa cuando ya estas ready para pagar
-  purchaseNumber: string = '123456' // Aqui pones el ID de la Reserva  
+  reservaAmount = signal<number>(0.00); // Monto valor de la reserva
+  isReadyToPay = signal<boolean>(false); // Esto se activa cuando ya estas ready para pagar
+  purchaseNumber = signal<string>('') // Aqui pones el ID de la Reserva  
+
+  //   reservaAmount: number = 50.00; // Monto valor de la reserva
+  // isReadyToPay: boolean = false; // Esto se activa cuando ya estas ready para pagar
+  // purchaseNumber: string = '123456'
 
   constructor(private fb: FormBuilder, private paymentService: PaymentService) {
     this.dateFormGroup = this.fb.group({
@@ -113,9 +117,9 @@ export default class ReservaComponent implements OnInit {
     this.userFormGroup = this.fb.group({
       tipdoc: ['', Validators.required],
       numdoc: ['', Validators.required],
-      nombres: [{ value: '', disabled: false }, Validators.required],
-      apellidos: [{ value: '', disabled: false }, Validators.required],
-      direccion: [{ value: '', disabled: false }, Validators.required],
+      nombres: [{ value: '', disabled: true }, Validators.required],
+      apellidos: [{ value: '', disabled: true }, Validators.required],
+      direccion: [{ value: '', disabled: true }, Validators.required],
       correo: ['', [Validators.required, Validators.email]],
       telefono: ['', [Validators.minLength(9), Validators.required]],
     });
@@ -151,7 +155,6 @@ export default class ReservaComponent implements OnInit {
   };
 
   saveReservaCita() {
-    
     const rawUser = this.userFormGroup.getRawValue();
     const rawPet = this.petFormGroup.getRawValue();
     const rawDate = this.dateFormGroup.getRawValue();
@@ -178,6 +181,12 @@ export default class ReservaComponent implements OnInit {
     this.veterinariaService.postReservarCita(post).subscribe({
       next: (res) => {
         this.sweetAlertService.success('', res[0].mensaje)
+        this.purchaseNumber.set(res[0].numero_liquidacion);
+        this.reservaAmount.set(res[0].monto_a_pagar);
+        console.log('savere', res[0].monto_a_pagar);
+        // this.openPaymentForm();
+
+
       },
       error: (error) => {
         console.error('Error al crear reserva: ', error);
@@ -406,16 +415,32 @@ export default class ReservaComponent implements OnInit {
     }
   }
 
+  updLiquidacionPago(){
+    const post = {
+      numero_liquidacion: this.purchaseNumber()
+    }
+
+    this.veterinariaService.updLiquidacionPago(post).subscribe({
+      next:(res)=>{
+        console.log('response: ', res);
+      },
+      error:(error)=>{
+        console.log('error: ', error);
+        
+      }
+    })
+  }
+
   // Cambios Horny
 
   private configureNiubiz(sessionToken: string): void {
     VisanetCheckout.configure({
-      action: 'https://localhost:4200/veterinaria/success-payment/' + this.purchaseNumber,
+      action: 'https://localhost:4200/veterinaria/success-payment/' + this.purchaseNumber(),
       sessiontoken: sessionToken,
       channel: 'web',
-      merchantid: '456879852',
-      purchasenumber: this.purchaseNumber,
-      amount: this.reservaAmount,
+      merchantid: '651043487',
+      purchasenumber: this.purchaseNumber(),
+      amount: this.reservaAmount(),
       expirationminutes: '20',
       timeouturl: 'about:blank',
       merchantlogo: '/assets/images/logo.png',
@@ -428,11 +453,11 @@ export default class ReservaComponent implements OnInit {
     });
   }
 
-  paymentProcessInit(){
-    this.paymentService.getSessionToken(this.reservaAmount).subscribe({
+  paymentProcessInit() {
+    this.paymentService.getSessionToken(this.reservaAmount()).subscribe({
       next: (response) => {
         this.configureNiubiz(response.sessionToken);
-        this.isReadyToPay = true;
+        this.isReadyToPay.set(true);
         VisanetCheckout.open();
         console.log('Token de sesión obtenido y Niubiz configurado.');
       },
@@ -444,14 +469,17 @@ export default class ReservaComponent implements OnInit {
   }
 
   openPaymentForm(): void {
-    this.paymentProcessInit();
+    this.saveReservaCita();
+    setTimeout(() => {
+      this.paymentProcessInit();
+    }, 0);
   }
 
   private handleSuccess(data: any): void {
     const payload: PaymentPayload = {
       transactionToken: data.transactionToken,
-      purchaseNumber: this.purchaseNumber,
-      amount: this.reservaAmount
+      purchaseNumber: this.purchaseNumber(),
+      amount: this.reservaAmount()
     };
 
     this.paymentService.processFinalPayment(payload).subscribe({
@@ -459,6 +487,7 @@ export default class ReservaComponent implements OnInit {
         if (response.success) {
           this.saveReservaCita();
           console.log('¡Pago exitoso!', response.data);
+          this.updLiquidacionPago();
           // Aquí rediriges a una página de éxito
           // this.router.navigate(['/pago-exitoso']);
         } else {
