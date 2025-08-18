@@ -44,16 +44,11 @@ interface HorarioDisponible {
   hora_disponible: string;
 }
 
-
-
 interface DataRazas {
   raza_id: number;
   especie_id: number;
   raza_nombre: string;
 }
-
-
-
 
 @Component({
   selector: 'app-reserva',
@@ -117,9 +112,9 @@ export default class ReservaComponent implements OnInit {
     this.userFormGroup = this.fb.group({
       tipdoc: ['', Validators.required],
       numdoc: ['', Validators.required],
-      nombres: [{ value: '', disabled: true }, Validators.required],
-      apellidos: [{ value: '', disabled: true }, Validators.required],
-      direccion: [{ value: '', disabled: true }, Validators.required],
+      nombres: [{ value: '', disabled: false }, Validators.required],
+      apellidos: [{ value: '', disabled: false }, Validators.required],
+      direccion: [{ value: '', disabled: false }, Validators.required],
       correo: ['', [Validators.required, Validators.email]],
       telefono: ['', [Validators.minLength(9), Validators.required]],
     });
@@ -435,10 +430,10 @@ export default class ReservaComponent implements OnInit {
 
   private configureNiubiz(sessionToken: string): void {
     VisanetCheckout.configure({
-      action: 'https://localhost:4200/veterinaria/success-payment/' + this.purchaseNumber(),
+      action: 'http://localhost:4200/veterinaria/success-payment/' + this.purchaseNumber(),
       sessiontoken: sessionToken,
       channel: 'web',
-      merchantid: '651043487',
+      merchantid: '650236756',
       purchasenumber: this.purchaseNumber(),
       amount: this.reservaAmount(),
       expirationminutes: '20',
