@@ -153,11 +153,10 @@
                     <p><strong> RESUMEN DE LA RESERVA:</strong></p>
                     <p><strong>Fecha:</strong> {{ dateFormGroup.value.date | date }}</p>
                     <p><strong>Hora:</strong> {{ dateFormGroup.value.time }}</p>
-                    <p><strong>Persona:</strong> {{ userFormGroup.value.nombres }}</p>
                     <!-- <p><strong>Persona:</strong> {{ userFormGroup.value.nombres }} {{ userFormGroup.value.apellidos }}</p> -->
                     <p><strong>Correo:</strong> {{ userFormGroup.value.correo }}</p>
                     <p><strong>Telefono:</strong> {{ userFormGroup.value.telefono }}</p>
-                    <p><strong>Mascota:</strong> {{ petFormGroup.value.nombre }}</p>
+                    <!-- <p><strong>Mascota:</strong> {{ petFormGroup.value.nombre }}</p> -->
                     <!-- <p><strong>Motivo:</strong> {{ petFormGroup.value.motivo }}</p> -->
 
                     <button mat-button color="primary" (click)="openPaymentForm();">Pagar</button>
