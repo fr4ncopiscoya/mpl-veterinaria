@@ -24,8 +24,8 @@ export class PaymentService {
    * @param amount El monto total de la transacción.
    * @returns Un Observable con el token de sesión.
    */
-  getSessionToken(amount: number): Observable<{ sessionToken: string }> {
-    return this.http.post<{ sessionToken: string }>(`${this.apiUrl}/session-token`, { amount });
+  getSessionToken(amount: number, email: string, phone: string): Observable<{ sessionToken: string }> {
+    return this.http.post<{ sessionToken: string }>(`${this.apiUrl}/session-token`, { amount, email, phone });
   }
 
   /**

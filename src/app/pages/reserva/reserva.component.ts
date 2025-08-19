@@ -94,9 +94,9 @@ export default class ReservaComponent implements OnInit {
   availableTimeSlots: string[] = [];
 
   // Variables Horny
-  reservaAmount = signal<number>(0.00); // Monto valor de la reserva
-  isReadyToPay = signal<boolean>(false); // Esto se activa cuando ya estas ready para pagar
-  purchaseNumber = signal<string>('') // Aqui pones el ID de la Reserva  
+  reservaAmount: number = 0.00; // Monto valor de la reserva
+  isReadyToPay: boolean = false; // Esto se activa cuando ya estas ready para pagar
+  purchaseNumber: string = ''; // Aqui pones el ID de la Reserva  
 
   //   reservaAmount: number = 50.00; // Monto valor de la reserva
   // isReadyToPay: boolean = false; // Esto se activa cuando ya estas ready para pagar
@@ -175,13 +175,9 @@ export default class ReservaComponent implements OnInit {
 
     this.veterinariaService.postReservarCita(post).subscribe({
       next: (res) => {
-        this.sweetAlertService.success('', res[0].mensaje)
-        this.purchaseNumber.set(res[0].numero_liquidacion);
-        this.reservaAmount.set(res[0].monto_a_pagar);
-        console.log('savere', res[0].monto_a_pagar);
-        // this.openPaymentForm();
-
-
+        this.purchaseNumber = res[0].numero_liquidacion;
+        this.reservaAmount = res[0].monto_a_pagar;
+        this.openPaymentForm();
       },
       error: (error) => {
         console.error('Error al crear reserva: ', error);
@@ -412,12 +408,13 @@ export default class ReservaComponent implements OnInit {
 
   updLiquidacionPago(){
     const post = {
-      numero_liquidacion: this.purchaseNumber()
+      numero_liquidacion: this.purchaseNumber
     }
 
     this.veterinariaService.updLiquidacionPago(post).subscribe({
       next:(res)=>{
         console.log('response: ', res);
+        window.location.href = '/veterinaria/success-payment/' + this.purchaseNumber;
       },
       error:(error)=>{
         console.log('error: ', error);
@@ -430,20 +427,19 @@ export default class ReservaComponent implements OnInit {
 
   private configureNiubiz(sessionToken: string): void {
     VisanetCheckout.configure({
-      action: 'http://localhost:8000/reservas/actualizar-pago/' + this.purchaseNumber(),
+      action: 'http://localhost:8000/reservas/actualizar-pago/' + this.purchaseNumber,
+      method: 'POST',
       sessiontoken: sessionToken,
       channel: 'web',
-      merchantid: '650236756',
-      purchasenumber: this.purchaseNumber(),
-      amount: this.reservaAmount(),
+      merchantid: '651043487',
+      purchasenumber: this.purchaseNumber,
+      amount: this.reservaAmount,
       expirationminutes: '20',
       timeouturl: 'about:blank',
-      merchantlogo: '/assets/images/logo.png',
+      merchantlogo: 'http://localhost:4200/assets/images/logo.png',
+      merchantname: 'Municipalidad de Pueblo Libre',
       formbuttoncolor: '#000000',
-      // onsuccess: this.handleSuccess.bind(this), // Usamos .bind(this) para mantener el contexto
-      onsuccess: () => {
-        window.location.href = '/veterinaria/success-payment/' + this.purchaseNumber();
-      },
+      onsuccess: this.handleSuccess.bind(this),
       onerror: (error: any) => {
         console.error('Error en el checkout de Niubiz:', error);
         alert('Ocurrió un error con el pago. Por favor, revisa tus datos.');
@@ -452,12 +448,14 @@ export default class ReservaComponent implements OnInit {
   }
 
   paymentProcessInit() {
-    this.paymentService.getSessionToken(this.reservaAmount()).subscribe({
+    this.paymentService.getSessionToken(this.reservaAmount, this.userFormGroup.get('correo')?.value, this.userFormGroup.get('telefono')?.value).subscribe({
       next: (response) => {
         this.configureNiubiz(response.sessionToken);
-        this.isReadyToPay.set(true);
-        VisanetCheckout.open();
+        this.isReadyToPay = true;
         console.log('Token de sesión obtenido y Niubiz configurado.');
+        setTimeout(() => {
+          VisanetCheckout.open();
+        }, 2000);
       },
       error: (err) => {
         console.error('Error al obtener el token de sesión', err);
@@ -467,29 +465,23 @@ export default class ReservaComponent implements OnInit {
   }
 
   openPaymentForm(): void {
-    this.saveReservaCita();
-    setTimeout(() => {
-      this.paymentProcessInit();
-    }, 0);
+    this.paymentProcessInit();
   }
 
   private handleSuccess(data: any): void {
     const payload: PaymentPayload = {
       transactionToken: data.transactionToken,
-      purchaseNumber: this.purchaseNumber(),
-      amount: this.reservaAmount()
+      purchaseNumber: this.purchaseNumber,
+      amount: this.reservaAmount
     };
 
     this.paymentService.processFinalPayment(payload).subscribe({
       next: (response) => {
         if (response.success) {
-          this.saveReservaCita();
-          console.log('¡Pago exitoso!', response.data);
+          console.log('¡Pago exitoso!', response);
           this.updLiquidacionPago();
-          // Aquí rediriges a una página de éxito
-          // this.router.navigate(['/pago-exitoso']);
         } else {
-          console.error('El pago falló en el backend', response.data);
+          console.error('El pago falló en el backend', response);
           this.sweetAlertService.error('', 'El pago no pudo ser procesado por el banco. Intenta con otra tarjeta.')
         }
       },
