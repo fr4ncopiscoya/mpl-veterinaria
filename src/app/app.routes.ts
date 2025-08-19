@@ -16,14 +16,14 @@ export const routes: Routes = [
                 loadComponent: () => import('./pages/reserva/reserva.component'),
             },
             {
-                path: 'success-payment/:purchaseNumber',
-                loadComponent: () => import('./pages/reserva/success-payment/success-payment.component'),
-            },
-            {
                 path: '**',
                 redirectTo: 'inicio'
             }
         ]
+    },
+    {
+        path: 'success-payment/:purchaseNumber',
+        loadComponent: () => import('./pages/reserva/success-payment/success-payment.component'),
     },
     {
         path: 'admin',

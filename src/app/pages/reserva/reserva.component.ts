@@ -414,7 +414,7 @@ export default class ReservaComponent implements OnInit {
     this.veterinariaService.updLiquidacionPago(post).subscribe({
       next:(res)=>{
         console.log('response: ', res);
-        window.location.href = '/veterinaria/success-payment/' + this.purchaseNumber;
+        window.location.href = '/success-payment/' + this.purchaseNumber;
       },
       error:(error)=>{
         console.log('error: ', error);
@@ -436,7 +436,7 @@ export default class ReservaComponent implements OnInit {
       amount: this.reservaAmount,
       expirationminutes: '20',
       timeouturl: 'about:blank',
-      merchantlogo: 'http://localhost:4200/assets/images/logo.png',
+      merchantlogo: 'http://localhost:4200/assets/images/logo-mpl-white.png',
       merchantname: 'Municipalidad de Pueblo Libre',
       formbuttoncolor: '#000000',
       onsuccess: this.handleSuccess.bind(this),
