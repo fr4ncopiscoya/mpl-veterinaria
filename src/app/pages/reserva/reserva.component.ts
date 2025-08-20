@@ -110,13 +110,13 @@ export default class ReservaComponent implements OnInit {
     });
 
     this.userFormGroup = this.fb.group({
-      tipdoc: ['', Validators.required],
-      numdoc: ['', Validators.required],
-      nombres: [{ value: '', disabled: false }, Validators.required],
-      apellidos: [{ value: '', disabled: false }, Validators.required],
+      tipdoc: ['1', Validators.required],
+      numdoc: ['70399095', Validators.required],
+      nombres: [{ value: 'Harry Martin', disabled: false }, Validators.required],
+      apellidos: [{ value: 'Arroyo Preciado', disabled: false }, Validators.required],
       direccion: [{ value: '', disabled: false }, Validators.required],
-      correo: ['', [Validators.required, Validators.email]],
-      telefono: ['', [Validators.minLength(9), Validators.required]],
+      correo: ['harroyop@gmail.com', [Validators.required, Validators.email]],
+      telefono: ['933439760', [Validators.minLength(9), Validators.required]],
     });
 
     this.userFormGroup.get('tipdoc')?.valueChanges.subscribe((tipo: number) => {
@@ -124,7 +124,7 @@ export default class ReservaComponent implements OnInit {
     });
 
     this.petFormGroup = this.fb.group({
-      nombre: ['', Validators.required],
+      nombre: ['barzoladog', Validators.required],
       especie: ['', Validators.required],
       raza: ['', Validators.required],
       // motivo: ['', Validators.required]
@@ -427,16 +427,16 @@ export default class ReservaComponent implements OnInit {
 
   private configureNiubiz(sessionToken: string): void {
     VisanetCheckout.configure({
-      action: 'http://localhost:8000/reservas/actualizar-pago/' + this.purchaseNumber,
+      action: 'http://localhost:8000/niubiz/process-payment/' + this.purchaseNumber + '/' + this.reservaAmount,
       method: 'POST',
       sessiontoken: sessionToken,
       channel: 'web',
-      merchantid: '651043487',
+      merchantid: '650236756',
       purchasenumber: this.purchaseNumber,
       amount: this.reservaAmount,
       expirationminutes: '20',
       timeouturl: 'about:blank',
-      merchantlogo: 'http://localhost:4200/assets/images/logo.png',
+      merchantlogo: 'http://localhost:4200/assets/images/logo-large.png',
       merchantname: 'Municipalidad de Pueblo Libre',
       formbuttoncolor: '#000000',
       onsuccess: this.handleSuccess.bind(this),
@@ -450,12 +450,13 @@ export default class ReservaComponent implements OnInit {
   paymentProcessInit() {
     this.paymentService.getSessionToken(this.reservaAmount, this.userFormGroup.get('correo')?.value, this.userFormGroup.get('telefono')?.value).subscribe({
       next: (response) => {
+        console.log('PASO 1: OBTENGO TOKEN DE SESION:', response);
         this.configureNiubiz(response.sessionToken);
         this.isReadyToPay = true;
         console.log('Token de sesión obtenido y Niubiz configurado.');
         setTimeout(() => {
           VisanetCheckout.open();
-        }, 2000);
+        }, 500);
       },
       error: (err) => {
         console.error('Error al obtener el token de sesión', err);
@@ -469,6 +470,8 @@ export default class ReservaComponent implements OnInit {
   }
 
   private handleSuccess(data: any): void {
+    console.log('PASO 2: ENVIO INFORMACION DE PAGO AL BACKEND PARA AUTORIZACION:', data);
+    
     const payload: PaymentPayload = {
       transactionToken: data.transactionToken,
       purchaseNumber: this.purchaseNumber,
@@ -479,7 +482,7 @@ export default class ReservaComponent implements OnInit {
       next: (response) => {
         if (response.success) {
           console.log('¡Pago exitoso!', response);
-          this.updLiquidacionPago();
+          // this.updLiquidacionPago();
         } else {
           console.error('El pago falló en el backend', response);
           this.sweetAlertService.error('', 'El pago no pudo ser procesado por el banco. Intenta con otra tarjeta.')
