@@ -406,28 +406,28 @@ export default class ReservaComponent implements OnInit {
     }
   }
 
-  updLiquidacionPago(){
-    const post = {
-      numero_liquidacion: this.purchaseNumber
-    }
+  // updLiquidacionPago(){
+  //   const post = {
+  //     numero_liquidacion: this.purchaseNumber
+  //   }
 
-    this.veterinariaService.updLiquidacionPago(post).subscribe({
-      next:(res)=>{
-        console.log('response: ', res);
-        window.location.href = '/success-payment/' + this.purchaseNumber;
-      },
-      error:(error)=>{
-        console.log('error: ', error);
+  //   this.veterinariaService.updLiquidacionPago(post).subscribe({
+  //     next:(res)=>{
+  //       console.log('response: ', res);
+  //       window.location.href = '/success-payment/' + this.purchaseNumber;
+  //     },
+  //     error:(error)=>{
+  //       console.log('error: ', error);
         
-      }
-    })
-  }
+  //     }
+  //   })
+  // }
 
   // Cambios Horny
 
   private configureNiubiz(sessionToken: string): void {
     VisanetCheckout.configure({
-      action: 'http://localhost:8000/niubiz/process-payment/' + this.purchaseNumber + '/' + this.reservaAmount,
+      action: 'http://127.0.0.1:8000/niubiz/process-payment/' + this.purchaseNumber + '/' + this.reservaAmount,
       method: 'POST',
       sessiontoken: sessionToken,
       channel: 'web',

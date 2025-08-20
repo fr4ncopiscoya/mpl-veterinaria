@@ -26,6 +26,10 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/reserva/success-payment/success-payment.component'),
     },
     {
+        path: 'error-payment/:purchaseNumber',
+        loadComponent: () => import('./pages/reserva/error-payment/error-payment.component'),
+    },
+    {
         path: 'admin',
         loadComponent: () => import('./pages/templates/admin/admin.component'),
         children: [
