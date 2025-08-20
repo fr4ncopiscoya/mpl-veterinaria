@@ -7,6 +7,8 @@ export interface PaymentPayload {
   transactionToken: string;
   purchaseNumber: string;
   amount: number;
+  ipAddress: string;
+  urlAddress: string;
 }
 
 @Injectable({
@@ -24,7 +26,7 @@ export class PaymentService {
    * @param amount El monto total de la transacción.
    * @returns Un Observable con el token de sesión.
    */
-  getSessionToken(amount: number, email: string, phone: string): Observable<{ sessionToken: string }> {
+  getSessionToken(amount: number, email: string, phone: string, ipAddress: string): Observable<{ sessionToken: string }> {
     return this.http.post<{ sessionToken: string }>(`${this.apiUrl}/session-token`, { amount, email, phone });
   }
 

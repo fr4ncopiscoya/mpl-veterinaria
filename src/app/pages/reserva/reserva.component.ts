@@ -12,6 +12,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { VeterinariaService } from '../../services/veterinaria.service';
 import { SweetAlertService } from '../../services/sweet-alert.service';
 import { PaymentService, PaymentPayload } from '../../services/payment.service';
+import { IpService } from '../../services/ip-service.service';
 
 declare const VisanetCheckout: any;
 
@@ -97,12 +98,14 @@ export default class ReservaComponent implements OnInit {
   reservaAmount: number = 0.00; // Monto valor de la reserva
   isReadyToPay: boolean = false; // Esto se activa cuando ya estas ready para pagar
   purchaseNumber: string = ''; // Aqui pones el ID de la Reserva  
+  ipAddress: string = '';
+  urlAddress: string = '';
 
   //   reservaAmount: number = 50.00; // Monto valor de la reserva
   // isReadyToPay: boolean = false; // Esto se activa cuando ya estas ready para pagar
   // purchaseNumber: string = '123456'
 
-  constructor(private fb: FormBuilder, private paymentService: PaymentService) {
+  constructor(private fb: FormBuilder, private paymentService: PaymentService, private ipService: IpService) {
     this.dateFormGroup = this.fb.group({
       date: [null, Validators.required],
       time: [null, Validators.required],
@@ -141,6 +144,7 @@ export default class ReservaComponent implements OnInit {
 
   ngOnInit(): void {
     this.getFechasDisponibles();
+    this.getIp();
   }
 
   filterDates = (date: Date | null): boolean => {
@@ -148,6 +152,13 @@ export default class ReservaComponent implements OnInit {
     const dateStr = date.toISOString().split('T')[0];
     return this.dataFechasDisponibles().includes(dateStr);
   };
+
+  getIp() {
+    this.ipService.getPublicIp().subscribe((res: any) => {
+      this.ipAddress = res.ip;
+      this.urlAddress = document.location.href;
+    });
+  }
 
   saveReservaCita() {
     const rawUser = this.userFormGroup.getRawValue();
@@ -427,7 +438,7 @@ export default class ReservaComponent implements OnInit {
 
   private configureNiubiz(sessionToken: string): void {
     VisanetCheckout.configure({
-      action: 'http://localhost:8000/niubiz/process-payment/' + this.purchaseNumber + '/' + this.reservaAmount,
+      action: 'http://localhost:8000/niubiz/process-payment/' + this.purchaseNumber + '/' + this.reservaAmount + '/' + this.urlAddress,
       method: 'POST',
       sessiontoken: sessionToken,
       channel: 'web',
@@ -448,7 +459,7 @@ export default class ReservaComponent implements OnInit {
   }
 
   paymentProcessInit() {
-    this.paymentService.getSessionToken(this.reservaAmount, this.userFormGroup.get('correo')?.value, this.userFormGroup.get('telefono')?.value).subscribe({
+    this.paymentService.getSessionToken(this.reservaAmount, this.userFormGroup.get('correo')?.value, this.userFormGroup.get('telefono')?.value, this.ipAddress).subscribe({
       next: (response) => {
         console.log('PASO 1: OBTENGO TOKEN DE SESION:', response);
         this.configureNiubiz(response.sessionToken);
@@ -475,7 +486,9 @@ export default class ReservaComponent implements OnInit {
     const payload: PaymentPayload = {
       transactionToken: data.transactionToken,
       purchaseNumber: this.purchaseNumber,
-      amount: this.reservaAmount
+      amount: this.reservaAmount,
+      ipAddress: this.ipAddress,
+      urlAddress: this.urlAddress
     };
 
     this.paymentService.processFinalPayment(payload).subscribe({
@@ -494,4 +507,6 @@ export default class ReservaComponent implements OnInit {
       }
     });
   }
+
+
 }
