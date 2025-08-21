@@ -12,7 +12,9 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { VeterinariaService } from '../../services/veterinaria.service';
 import { SweetAlertService } from '../../services/sweet-alert.service';
 import { PaymentService, PaymentPayload } from '../../services/payment.service';
+import { IpService } from '../../services/ip-service.service';
 import { Router } from '@angular/router';
+import { UppercaseDirective } from '../../shared/directives/uppercase.directive';
 
 declare const VisanetCheckout: any;
 
@@ -63,7 +65,8 @@ interface DataRazas {
     MatNativeDateModule,
     MatStepperModule,
     MatButtonModule,
-    DatePipe
+    DatePipe,
+    UppercaseDirective
   ],
   templateUrl: './reserva.component.html',
   // styleUrl: ,
@@ -76,6 +79,7 @@ export default class ReservaComponent implements OnInit {
 
   private veterinariaService = inject(VeterinariaService);
   private sweetAlertService = inject(SweetAlertService);
+  private ipService = inject(IpService);
   private router = inject(Router);
 
   dataReniec = signal<DatosPersona | null>(null);
@@ -99,6 +103,8 @@ export default class ReservaComponent implements OnInit {
   reservaAmount: number = 0.00; // Monto valor de la reserva
   isReadyToPay: boolean = false; // Esto se activa cuando ya estas ready para pagar
   purchaseNumber: string = ''; // Aqui pones el ID de la Reserva  
+  ipAddress: string = '';
+  urlAddress: string = '';
 
   //   reservaAmount: number = 50.00; // Monto valor de la reserva
   // isReadyToPay: boolean = false; // Esto se activa cuando ya estas ready para pagar
@@ -123,9 +129,9 @@ export default class ReservaComponent implements OnInit {
     this.userFormGroup = this.fb.group({
       tipdoc: ['', Validators.required],
       numdoc: ['', Validators.required],
-      nombres: [{ value: '', disabled: false }, Validators.required],
-      apellidos: [{ value: '', disabled: false }, Validators.required],
-      direccion: [{ value: '', disabled: false }, Validators.required],
+      nombres: [{ value: '', disabled: true }, Validators.required],
+      apellidos: [{ value: '', disabled: true }, Validators.required],
+      direccion: ['', Validators.required],
       correo: ['', [Validators.required, Validators.email]],
       telefono: ['', [Validators.minLength(9), Validators.required]],
     });
@@ -152,6 +158,7 @@ export default class ReservaComponent implements OnInit {
 
   ngOnInit(): void {
     this.getFechasDisponibles();
+    this.getIp();
   }
 
   filterDates = (date: Date | null): boolean => {
@@ -159,6 +166,16 @@ export default class ReservaComponent implements OnInit {
     const dateStr = date.toISOString().split('T')[0];
     return this.dataFechasDisponibles().includes(dateStr);
   };
+
+  getIp() {
+    this.ipService.getPublicIp().subscribe((res: any) => {
+      this.ipAddress = res.ip;
+      const originalUrl = document.location.href;
+      this.urlAddress = btoa(originalUrl);
+    });
+
+
+  }
 
   saveReservaCita() {
     const rawUser = this.userFormGroup.getRawValue();
@@ -286,13 +303,11 @@ export default class ReservaComponent implements OnInit {
       direccion: '',
     });
 
-    if (value != 1) {
-      this.userFormGroup.get('direccion')?.enable();
-    } else {
-      this.userFormGroup.get('direccion')?.disable();
-    }
-
-    console.log('value?', value);
+    // if (value != 1) {
+    //   this.userFormGroup.get('direccion')?.enable();
+    // } else {
+    //   this.userFormGroup.get('direccion')?.disable();
+    // }
 
     // this.resetFields();
   }
@@ -300,20 +315,30 @@ export default class ReservaComponent implements OnInit {
   searchPersona(numdoc: string) {
     const tipDoc = this.userFormGroup.get('tipdoc')?.value;
 
-    if ((tipDoc == 1 && numdoc.length === 8)) {
-      this.getReniec(numdoc);
-    } else if ((tipDoc == 1 && numdoc.length > 5 && numdoc.length < 8)) {
-      this.sweetAlertService.info('Opps!', 'El documento debe tener 8 digitos')
+    const nombres = this.userFormGroup.get('nombres')?.value;
+    console.log('nombres: ', nombres);
+
+
+    if (nombres === '') {
+      if ((tipDoc == 1 && numdoc.length === 8)) {
+        this.getReniec(numdoc);
+      } else if ((tipDoc == 1 && numdoc.length > 5 && numdoc.length < 8)) {
+        this.sweetAlertService.info('Opps!', 'El documento debe tener 8 digitos')
+      } else {
+        console.warn('Documento Invalido');
+      }
+      if ((tipDoc == 2 && numdoc.length === 9)) {
+        this.getCExtranjeria(numdoc);
+      } else if ((tipDoc == 2 && numdoc.length > 5 && numdoc.length < 9)) {
+        this.sweetAlertService.info('Opps!', 'El documento debe tener 9 digitos')
+      } else {
+        console.warn('Documento Invalido');
+      }
     } else {
-      console.warn('Documento Invalido');
+      console.log('ya consultaste oe XD');
+
     }
-    if ((tipDoc == 2 && numdoc.length === 9)) {
-      this.getCExtranjeria(numdoc);
-    } else if ((tipDoc == 2 && numdoc.length > 5 && numdoc.length < 9)) {
-      this.sweetAlertService.info('Opps!', 'El documento debe tener 9 digitos')
-    } else {
-      console.warn('Documento Invalido');
-    }
+
   }
 
   getReniec(query: string) {
@@ -438,7 +463,8 @@ export default class ReservaComponent implements OnInit {
 
   private configureNiubiz(sessionToken: string): void {
     VisanetCheckout.configure({
-      action: 'http://127.0.0.1:8000/niubiz/process-payment/' + this.purchaseNumber + '/' + this.reservaAmount,
+      // action: 'http://127.0.0.1:8000/niubiz/process-payment',
+      action: 'http://localhost:8000/niubiz/process-payment/' + this.purchaseNumber + '/' + this.reservaAmount + '/' + this.urlAddress,
       method: 'POST',
       sessiontoken: sessionToken,
       channel: 'web',
@@ -450,16 +476,21 @@ export default class ReservaComponent implements OnInit {
       merchantlogo: 'http://localhost:4200/assets/images/logo-large.png',
       merchantname: 'Municipalidad de Pueblo Libre',
       formbuttoncolor: '#000000',
+      additionalData: {
+        purchaseNumber: this.purchaseNumber,
+        amount: this.reservaAmount,
+        urlAddress: encodeURIComponent(this.urlAddress)
+      },
       onsuccess: this.handleSuccess.bind(this),
       onerror: (error: any) => {
         console.error('Error en el checkout de Niubiz:', error);
         alert('Ocurrió un error con el pago. Por favor, revisa tus datos.');
-      }
+      },
     });
   }
 
   paymentProcessInit() {
-    this.paymentService.getSessionToken(this.reservaAmount, this.userFormGroup.get('correo')?.value, this.userFormGroup.get('telefono')?.value).subscribe({
+    this.paymentService.getSessionToken(this.reservaAmount, this.userFormGroup.get('correo')?.value, this.userFormGroup.get('telefono')?.value, this.ipAddress).subscribe({
       next: (response) => {
         console.log('PASO 1: OBTENGO TOKEN DE SESION:', response);
         this.configureNiubiz(response.sessionToken);
@@ -486,7 +517,9 @@ export default class ReservaComponent implements OnInit {
     const payload: PaymentPayload = {
       transactionToken: data.transactionToken,
       purchaseNumber: this.purchaseNumber,
-      amount: this.reservaAmount
+      amount: this.reservaAmount,
+      ipAddress: this.ipAddress,
+      urlAddress: this.urlAddress
     };
 
     this.paymentService.processFinalPayment(payload).subscribe({
@@ -515,4 +548,6 @@ export default class ReservaComponent implements OnInit {
       }
     });
   }
+
+
 }

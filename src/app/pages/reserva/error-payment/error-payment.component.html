@@ -21,15 +21,13 @@
                                         <p><strong>Compra Nº:</strong> {{ purchaseNumber}}</p>
                                         <p><strong>Fecha:</strong> {{ formatDate(paymentData?.data?.TRANSACTION_DATE) }}</p>
                                         <p><strong>Motivo:</strong> {{ paymentData?.data?.ACTION_DESCRIPTION }}</p>
-                                        <!-- <p><strong>Estado:</strong> {{ paymentData.dataMap.STATUS }}</p> -->
-                                        <!-- Hola 'nombre' tu cita para el 'DD/MM/AAAA' a las 'HH:MM' ya está reservada -->
                                     </div>
                                 </div>
                             </div>
 
                             <div class="mt-5">
-                                <h4>Oops ! Ocurrió un incoveniente</h4>
-                                <p class="text-muted">Tu pago fue rechazado, intentalo nuevamente para cancelar tu
+                                <h4>Ocurrió un incoveniente!</h4>
+                                <p class="text-muted">Tu pago fue rechazado, intentalo nuevamente para finalizar tu
                                     reserva</p>
                             </div>
 

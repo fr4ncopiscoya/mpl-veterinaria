@@ -16,7 +16,7 @@ export default class ErrorPaymentComponent {
     if (!dateStr || dateStr.length !== 12) return dateStr;
 
     const day = Number(dateStr.substring(0, 2));
-    const month = Number(dateStr.substring(2, 4)) - 1; // JS usa 0-11
+    const month = Number(dateStr.substring(2, 4)) - 1;
     const year = Number(dateStr.substring(4, 8));
     const hour = Number(dateStr.substring(8, 10));
     const minute = Number(dateStr.substring(10, 12));

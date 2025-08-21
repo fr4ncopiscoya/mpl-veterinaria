@@ -79,7 +79,7 @@
                             <mat-form-field appearance="fill" class="w-100">
                                 <mat-label>N° Doc</mat-label>
                                 <input matInput formControlName="numdoc" type="number" #txtNumdoc
-                                    (blur)="searchPersona(txtNumdoc.value)">
+                                    (blur)="searchPersona(txtNumdoc.value)" (keyup.enter)="searchPersona(txtNumdoc.value)">
                             </mat-form-field>
                             <mat-form-field appearance="fill" class="w-100">
                                 <mat-label>Nombres</mat-label>
@@ -91,7 +91,7 @@
                             </mat-form-field>
                             <mat-form-field appearance="fill" class="w-100">
                                 <mat-label>Dirección</mat-label>
-                                <input matInput formControlName="direccion">
+                                <input matInput formControlName="direccion" appUppercase>
                             </mat-form-field>
                             <mat-form-field appearance="fill" class="w-100">
                                 <mat-label>Correo</mat-label>
@@ -120,7 +120,7 @@
 
                             <mat-form-field appearance="fill" class="w-100">
                                 <mat-label>Nombre de la mascota</mat-label>
-                                <input matInput formControlName="nombre">
+                                <input matInput formControlName="nombre" appUppercase>
                             </mat-form-field>
 
                             <mat-form-field appearance="fill" class="w-100">

@@ -7,6 +7,8 @@ export interface PaymentPayload {
   transactionToken: string;
   purchaseNumber: string;
   amount: number;
+  ipAddress: string;
+  urlAddress: string;
 }
 
 @Injectable({
@@ -17,7 +19,6 @@ export class PaymentService {
   private apiUrl = 'http://127.0.0.1:8000/niubiz'; // URL base
   // private apiUrl = 'http://localhost:4200/niubiz'; // URL base
 
-  private paymentData: any = null;
 
   constructor(private http: HttpClient) { }
 
@@ -26,7 +27,7 @@ export class PaymentService {
    * @param amount El monto total de la transacción.
    * @returns Un Observable con el token de sesión.
    */
-  getSessionToken(amount: number, email: string, phone: string): Observable<{ sessionToken: string }> {
+  getSessionToken(amount: number, email: string, phone: string, ipAddress: string): Observable<{ sessionToken: string }> {
     return this.http.post<{ sessionToken: string }>(`${this.apiUrl}/session-token`, { amount, email, phone });
   }
 
@@ -37,15 +38,6 @@ export class PaymentService {
    */
   processFinalPayment(payload: PaymentPayload): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/process-payment`, payload);
-  }
-
-
-  setPaymentData(data: any) {
-    this.paymentData = data;
-  }
-
-  getPaymentData() {
-    return this.paymentData;
   }
 
 }
