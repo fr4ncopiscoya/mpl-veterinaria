@@ -12,6 +12,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { VeterinariaService } from '../../services/veterinaria.service';
 import { SweetAlertService } from '../../services/sweet-alert.service';
 import { PaymentService, PaymentPayload } from '../../services/payment.service';
+import { Router } from '@angular/router';
 
 declare const VisanetCheckout: any;
 
@@ -75,6 +76,7 @@ export default class ReservaComponent implements OnInit {
 
   private veterinariaService = inject(VeterinariaService);
   private sweetAlertService = inject(SweetAlertService);
+  private router = inject(Router);
 
   dataReniec = signal<DatosPersona | null>(null);
   dataExtranjeria = signal<DatosPersonaExtranjera | null>(null);
@@ -102,6 +104,15 @@ export default class ReservaComponent implements OnInit {
   // isReadyToPay: boolean = false; // Esto se activa cuando ya estas ready para pagar
   // purchaseNumber: string = '123456'
 
+
+  //Data Response Success-payment
+  purcharseNumber = signal<string>('');
+  transactionDate = signal<string>('');
+  amount = signal<string>('');
+  currency = signal<string>('');
+  card = signal<string>('');
+  brand = signal<string>('');
+
   constructor(private fb: FormBuilder, private paymentService: PaymentService) {
     this.dateFormGroup = this.fb.group({
       date: [null, Validators.required],
@@ -110,13 +121,13 @@ export default class ReservaComponent implements OnInit {
     });
 
     this.userFormGroup = this.fb.group({
-      tipdoc: ['1', Validators.required],
-      numdoc: ['70399095', Validators.required],
-      nombres: [{ value: 'Harry Martin', disabled: false }, Validators.required],
-      apellidos: [{ value: 'Arroyo Preciado', disabled: false }, Validators.required],
+      tipdoc: ['', Validators.required],
+      numdoc: ['', Validators.required],
+      nombres: [{ value: '', disabled: false }, Validators.required],
+      apellidos: [{ value: '', disabled: false }, Validators.required],
       direccion: [{ value: '', disabled: false }, Validators.required],
-      correo: ['harroyop@gmail.com', [Validators.required, Validators.email]],
-      telefono: ['933439760', [Validators.minLength(9), Validators.required]],
+      correo: ['', [Validators.required, Validators.email]],
+      telefono: ['', [Validators.minLength(9), Validators.required]],
     });
 
     this.userFormGroup.get('tipdoc')?.valueChanges.subscribe((tipo: number) => {
@@ -124,7 +135,7 @@ export default class ReservaComponent implements OnInit {
     });
 
     this.petFormGroup = this.fb.group({
-      nombre: ['barzoladog', Validators.required],
+      nombre: ['', Validators.required],
       especie: ['', Validators.required],
       raza: ['', Validators.required],
       // motivo: ['', Validators.required]
@@ -418,7 +429,7 @@ export default class ReservaComponent implements OnInit {
   //     },
   //     error:(error)=>{
   //       console.log('error: ', error);
-        
+
   //     }
   //   })
   // }
@@ -431,7 +442,7 @@ export default class ReservaComponent implements OnInit {
       method: 'POST',
       sessiontoken: sessionToken,
       channel: 'web',
-      merchantid: '650236756',
+      merchantid: '456879852',
       purchasenumber: this.purchaseNumber,
       amount: this.reservaAmount,
       expirationminutes: '20',
@@ -471,7 +482,7 @@ export default class ReservaComponent implements OnInit {
 
   private handleSuccess(data: any): void {
     console.log('PASO 2: ENVIO INFORMACION DE PAGO AL BACKEND PARA AUTORIZACION:', data);
-    
+
     const payload: PaymentPayload = {
       transactionToken: data.transactionToken,
       purchaseNumber: this.purchaseNumber,
@@ -482,6 +493,16 @@ export default class ReservaComponent implements OnInit {
       next: (response) => {
         if (response.success) {
           console.log('¡Pago exitoso!', response);
+          // this.purcharseNumber.set(response.data?.order?.purchaseNumber);
+          // this.transactionDate.set(response.data?.order?.purchaseNumber);
+          // this.amount.set(response.data?.order?.amount);
+          // this.currency.set(response.data?.order?.currency);
+          // this.card.set(response.data?.dataMap?.CARD);
+          // this.brand.set(response.data?.dataMap?.BRAND);
+
+          // this.paymentService.setPaymentData(response.data);
+          // this.router.navigate(['/success-payment', this.purchaseNumber]);
+
           // this.updLiquidacionPago();
         } else {
           console.error('El pago falló en el backend', response);

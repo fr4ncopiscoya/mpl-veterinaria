@@ -17,6 +17,8 @@ export class PaymentService {
   private apiUrl = 'http://127.0.0.1:8000/niubiz'; // URL base
   // private apiUrl = 'http://localhost:4200/niubiz'; // URL base
 
+  private paymentData: any = null;
+
   constructor(private http: HttpClient) { }
 
   /**
@@ -36,4 +38,14 @@ export class PaymentService {
   processFinalPayment(payload: PaymentPayload): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/process-payment`, payload);
   }
+
+
+  setPaymentData(data: any) {
+    this.paymentData = data;
+  }
+
+  getPaymentData() {
+    return this.paymentData;
+  }
+
 }

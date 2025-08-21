@@ -15,26 +15,36 @@
                             <h1>Pago exitoso !</h1>
                         </div>
                         <div>
-                            <!-- <div class="row justify-content-center">
+                            <div class="row justify-content-center">
                                 <div class="col-lg-10">
-                                    <div class="countdownlist">
-                                        Hola 'nombre' tu cita para el 'DD/MM/AAAA' a las 'HH:MM' ya está reservada
+                                    <div class="countdownlist" style="flex-wrap: wrap; justify-content: center;">
+                                        <p><strong>Compra Nº:</strong> {{ paymentData.order.purchaseNumber }}</p>
+                                        <!-- <p><strong>Fecha:</strong> {{ paymentData.order.transactionDate }}</p> -->
+                                        <p><strong>Fecha:</strong> {{ formatDate(paymentData.order.transactionDate) }}</p>
+                                        <p><strong>Monto:</strong> {{ paymentData.order.amount }} {{
+                                            paymentData.order.currency }}</p>
+                                        <p><strong>Tarjeta:</strong> {{ paymentData.dataMap.CARD }}</p>
+                                        <p><strong>Marca:</strong> {{ paymentData.dataMap.BRAND }}</p>
+                                        <!-- <p><strong>Estado:</strong> {{ paymentData.dataMap.STATUS }}</p> -->
+                                        <!-- Hola 'nombre' tu cita para el 'DD/MM/AAAA' a las 'HH:MM' ya está reservada -->
                                     </div>
                                 </div>
-                            </div> -->
+                            </div>
 
                             <div class="mt-5">
                                 <h4>Gracias por agendar una cita</h4>
-                                <p class="text-muted">Ya registramos tu cita correctamente, recuerda asistir puntal !</p>
+                                <p class="text-muted">Ya registramos tu cita correctamente, recuerda asistir puntal !
+                                </p>
                             </div>
 
                             <!-- <form action="#!">
                                 <div class="countdown-input-subscribe mx-auto my-4">
                                     <input type="email" class="form-control shadow"
                                         placeholder="Enter your email address" required /> -->
-                                    <button class="btn btn-primary" type="button" id="button-email" [routerLink]="'/veterinaria/reserva'" >Volver<i
-                                            class="ri-arrow-go-back-line align-bottom ms-2"></i></button>
-                                <!-- </div>
+                            <button class="btn btn-primary" type="button" id="button-email"
+                                [routerLink]="'/veterinaria/reserva'">Volver<i
+                                    class="ri-arrow-go-back-line align-bottom ms-2"></i></button>
+                            <!-- </div>
                             </form> -->
                         </div>
                     </div><!-- end card body -->

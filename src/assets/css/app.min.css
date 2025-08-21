@@ -10542,7 +10542,7 @@ span.flatpickr-weekday{
     padding:2px 16px
 }
 .auth-bg-cover{
-    background-image:url(../images/auth-one-bg.jpg);
+    /* background-image:url(../images/auth-one-bg.jpg); */
     background-size:cover;
     background-position:left center
 }

@@ -66,7 +66,7 @@
                 <mat-step [stepControl]="userFormGroup">
                     <form [formGroup]="userFormGroup">
                         <!-- <ng-template matStepLabel>Datos personales</ng-template> -->
-                         <h4 style="color: #000;">Datos Persona</h4>
+                        <h4 style="color: #000;">Datos Persona</h4>
 
                         <div class="p-3">
                             <mat-form-field appearance="fill" class="w-100">
@@ -78,9 +78,8 @@
                             </mat-form-field>
                             <mat-form-field appearance="fill" class="w-100">
                                 <mat-label>N° Doc</mat-label>
-                                <!-- <input matInput formControlName="numdoc" type="number" #txtNumdoc
-                                    (blur)="searchPersona(txtNumdoc.value)"> -->
-                                <input matInput formControlName="numdoc" type="number" #txtNumdoc>
+                                <input matInput formControlName="numdoc" type="number" #txtNumdoc
+                                    (blur)="searchPersona(txtNumdoc.value)">
                             </mat-form-field>
                             <mat-form-field appearance="fill" class="w-100">
                                 <mat-label>Nombres</mat-label>
@@ -115,7 +114,7 @@
                 <mat-step [stepControl]="petFormGroup">
                     <form [formGroup]="petFormGroup">
                         <!-- <ng-template matStepLabel>Datos Mascota</ng-template> -->
-                         <h4 style="color: #000;">Datos Mascota</h4>
+                        <h4 style="color: #000;">Datos Mascota</h4>
 
                         <div class="wizzard-content">
 
@@ -123,7 +122,7 @@
                                 <mat-label>Nombre de la mascota</mat-label>
                                 <input matInput formControlName="nombre">
                             </mat-form-field>
-    
+
                             <mat-form-field appearance="fill" class="w-100">
                                 <mat-label>Especie</mat-label>
                                 <mat-select formControlName="especie" (selectionChange)="onEspecieChange($event.value)">
@@ -131,7 +130,7 @@
                                     <mat-option value="2">GATO</mat-option>
                                 </mat-select>
                             </mat-form-field>
-    
+
                             <mat-form-field appearance="fill" class="w-100">
                                 <mat-label>Raza</mat-label>
                                 <mat-select formControlName="raza">
