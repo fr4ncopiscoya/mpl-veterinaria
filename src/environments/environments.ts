@@ -1,8 +1,8 @@
 export const environment = {
     production: true,
-    systemName: 'Interoperabilidad',
+    systemName: 'Veterinaria',
 
     //Urls
-    // apiBackend: 'http://veterinaria.api.mpl.com',
-    apiBackend: 'http://127.0.0.1:8000',
+    apiBackend: 'https://appsapi.muniplibre.gob.pe',
+    // apiBackend: 'http://127.0.0.1:8000',
 };

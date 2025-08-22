@@ -15,6 +15,7 @@ import { PaymentService, PaymentPayload } from '../../services/payment.service';
 import { IpService } from '../../services/ip-service.service';
 import { Router } from '@angular/router';
 import { UppercaseDirective } from '../../shared/directives/uppercase.directive';
+import { interval, Subscription } from 'rxjs';
 
 declare const VisanetCheckout: any;
 
@@ -82,6 +83,9 @@ export default class ReservaComponent implements OnInit {
   private ipService = inject(IpService);
   private router = inject(Router);
 
+  private merchantDEV = '456879852'
+  private merchantPRD = '651043487'
+
   dataReniec = signal<DatosPersona | null>(null);
   dataExtranjeria = signal<DatosPersonaExtranjera | null>(null);
   dataServicios = signal<DataServicios[]>([]);
@@ -106,18 +110,13 @@ export default class ReservaComponent implements OnInit {
   ipAddress: string = '';
   urlAddress: string = '';
 
+  contadorSub!: Subscription;
+  minutos: number = 0;
+  segundos: number = 0;
+
   //   reservaAmount: number = 50.00; // Monto valor de la reserva
   // isReadyToPay: boolean = false; // Esto se activa cuando ya estas ready para pagar
   // purchaseNumber: string = '123456'
-
-
-  //Data Response Success-payment
-  purcharseNumber = signal<string>('');
-  transactionDate = signal<string>('');
-  amount = signal<string>('');
-  currency = signal<string>('');
-  card = signal<string>('');
-  brand = signal<string>('');
 
   constructor(private fb: FormBuilder, private paymentService: PaymentService) {
     this.dateFormGroup = this.fb.group({
@@ -173,8 +172,47 @@ export default class ReservaComponent implements OnInit {
       const originalUrl = document.location.href;
       this.urlAddress = btoa(originalUrl);
     });
+  }
 
+  iniciarContador(minutos: number) {
+    // Ajustamos para que arranque en el minuto completo
+    this.minutos = minutos - 1;
+    this.segundos = 59;
 
+    // Si ya existe un contador, lo limpiamos para evitar duplicados
+    if (this.contadorSub) {
+      this.contadorSub.unsubscribe();
+    }
+
+    this.contadorSub = interval(1000).subscribe(() => {
+      if (this.segundos > 0) {
+        this.segundos--;
+      } else {
+        if (this.minutos > 0) {
+          this.minutos--;
+          this.segundos = 59;
+        } else {
+          // Tiempo expiró
+          this.contadorSub.unsubscribe();
+
+          // Acción al expirar: redirigir o recargar
+          alert('Tiempo de pago expirado. El horario se liberó.');
+
+          // Opción 1: recargar la página
+          window.location.reload();
+
+          // Opción 2: redirigir a otra ruta en Angular
+          // this.router.navigate(['/horarios']);
+        }
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    // Evitar fugas de memoria
+    if (this.contadorSub) {
+      this.contadorSub.unsubscribe();
+    }
   }
 
   saveReservaCita() {
@@ -201,17 +239,43 @@ export default class ReservaComponent implements OnInit {
       observaciones: 'Observaciones aquí'
     };
 
-    this.veterinariaService.postReservarCita(post).subscribe({
-      next: (res) => {
-        this.purchaseNumber = res[0].numero_liquidacion;
-        this.reservaAmount = res[0].monto_a_pagar;
-        this.openPaymentForm();
-      },
-      error: (error) => {
-        console.error('Error al crear reserva: ', error);
-        this.sweetAlertService.error('', error)
-      }
-    });
+    console.log('purcharseNumber: ', this.purchaseNumber);
+    console.log('reservaAmount: ', this.reservaAmount);
+    
+
+    if (this.purchaseNumber !== '' && this.reservaAmount > 0.1) {
+      this.openPaymentForm();
+    } else {
+      this.veterinariaService.postReservarCita(post).subscribe({
+        next: (res) => {
+          console.log('res: ', res[0]);
+
+          if (res[0].estado == "error") {
+            this.sweetAlertService.error('', res[0].mensaje);
+            this.purchaseNumber = '';
+            this.reservaAmount = 0.00
+            return
+          } else {
+
+            this.purchaseNumber = res[0].numero_liquidacion;
+            this.reservaAmount = res[0].monto_a_pagar;
+
+            // 🔹 Tomar minutos de bloqueo
+            const minutosBloqueo = res[0].minutos_bloqueo || 5; // fallback 5 minutos
+            this.iniciarContador(minutosBloqueo);
+
+            // 🔹 Abrir pasarela de pago
+            this.openPaymentForm();
+          }
+
+        },
+        error: (error) => {
+          console.error('Error al crear reserva: ', error);
+          this.sweetAlertService.error('', error)
+        }
+      });
+    }
+
   }
 
   private formatFecha(fecha: Date): string {
@@ -442,38 +506,21 @@ export default class ReservaComponent implements OnInit {
     }
   }
 
-  // updLiquidacionPago(){
-  //   const post = {
-  //     numero_liquidacion: this.purchaseNumber
-  //   }
-
-  //   this.veterinariaService.updLiquidacionPago(post).subscribe({
-  //     next:(res)=>{
-  //       console.log('response: ', res);
-  //       window.location.href = '/success-payment/' + this.purchaseNumber;
-  //     },
-  //     error:(error)=>{
-  //       console.log('error: ', error);
-
-  //     }
-  //   })
-  // }
-
   // Cambios Horny
 
   private configureNiubiz(sessionToken: string): void {
     VisanetCheckout.configure({
-      // action: 'http://127.0.0.1:8000/niubiz/process-payment',
-      action: 'http://localhost:8000/niubiz/process-payment/' + this.purchaseNumber + '/' + this.reservaAmount + '/' + this.urlAddress,
+      // action: 'https:///127.0.0.1:8000/niubiz/process-payment/' + this.purchaseNumber + '/' + this.reservaAmount + '/' + this.urlAddress,
+      action: 'https://appsapi.muniplibre.gob.pe/niubiz/process-payment/' + this.purchaseNumber + '/' + this.reservaAmount + '/' + this.urlAddress,
       method: 'POST',
       sessiontoken: sessionToken,
       channel: 'web',
-      merchantid: '456879852',
+      merchantid: this.merchantDEV,
       purchasenumber: this.purchaseNumber,
       amount: this.reservaAmount,
-      expirationminutes: '20',
-      timeouturl: 'about:blank',
-      merchantlogo: 'http://localhost:4200/assets/images/logo-large.png',
+      expirationminutes: '10',
+      timeouturl: 'https://apps.muniplibre.gob.pe/veterinaria/veterinaria/reserva',
+      merchantlogo: 'https://apps.muniplibre.gob.pe/assets/images/logo-large.png',
       merchantname: 'Municipalidad de Pueblo Libre',
       formbuttoncolor: '#000000',
       additionalData: {
@@ -498,7 +545,7 @@ export default class ReservaComponent implements OnInit {
         console.log('Token de sesión obtenido y Niubiz configurado.');
         setTimeout(() => {
           VisanetCheckout.open();
-        }, 500);
+        }, 100);
       },
       error: (err) => {
         console.error('Error al obtener el token de sesión', err);

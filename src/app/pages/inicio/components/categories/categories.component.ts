@@ -38,7 +38,7 @@ export class CategoriesComponent {
       text: 'Por el momento no contamos con este servico, pero muy pronto estará activo.',
       // text: 'Reserva una cita en la veterinaria de Pueblo Libre para atender a tu mascota.',
       textButton: 'Reservar',
-      link: 'http://localhost:4200/veterinaria/reserva/'
+      link: 'https://apps.muniplibre.gob.pe/veterinaria/veterinaria/reserva'
     }
   ]
 

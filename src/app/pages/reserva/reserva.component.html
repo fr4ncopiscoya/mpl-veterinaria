@@ -79,7 +79,8 @@
                             <mat-form-field appearance="fill" class="w-100">
                                 <mat-label>N° Doc</mat-label>
                                 <input matInput formControlName="numdoc" type="number" #txtNumdoc
-                                    (blur)="searchPersona(txtNumdoc.value)" (keyup.enter)="searchPersona(txtNumdoc.value)">
+                                    (blur)="searchPersona(txtNumdoc.value)"
+                                    (keyup.enter)="searchPersona(txtNumdoc.value)">
                             </mat-form-field>
                             <mat-form-field appearance="fill" class="w-100">
                                 <mat-label>Nombres</mat-label>
@@ -162,6 +163,13 @@
                     <button mat-button color="primary" (click)="saveReservaCita();">Pagar</button>
                 </mat-step>
             </mat-horizontal-stepper>
+
+            <div *ngIf="minutos >= 0">
+                <h4>
+                    Tiempo restante para pagar: {{minutos}}:{{segundos | number:'2.0'}}
+                </h4>
+            </div>
+
         </div>
     </div>
 </section>
