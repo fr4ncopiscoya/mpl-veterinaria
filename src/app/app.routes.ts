@@ -1,7 +1,17 @@
 import { Routes } from '@angular/router';
 import InicioComponent from './pages/inicio/inicio.component';
+import { LoginGuard } from './guards/login.guard';
+import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
+    {
+        path: 'success-payment/:purchaseNumber',
+        loadComponent: () => import('./pages/reserva/success-payment/success-payment.component'),
+    },
+    {
+        path: 'error-payment/:purchaseNumber',
+        loadComponent: () => import('./pages/reserva/error-payment/error-payment.component'),
+    },
     {
         path: 'veterinaria',
         loadComponent: () => import('./pages/templates/hero/hero.component'),
@@ -22,16 +32,9 @@ export const routes: Routes = [
         ]
     },
     {
-        path: 'success-payment/:purchaseNumber',
-        loadComponent: () => import('./pages/reserva/success-payment/success-payment.component'),
-    },
-    {
-        path: 'error-payment/:purchaseNumber',
-        loadComponent: () => import('./pages/reserva/error-payment/error-payment.component'),
-    },
-    {
         path: 'admin',
         loadComponent: () => import('./pages/templates/admin/admin.component'),
+        canActivate: [AuthGuard], // Solo si está logeado
         children: [
             {
                 path: 'inicio',
@@ -43,15 +46,19 @@ export const routes: Routes = [
                 data: { title: 'HISTORIAL DE RESERVAS' }
             },
             {
-                path: '**',
-                redirectTo: 'inicio'
+                path: '', redirectTo: 'inicio',
+                pathMatch: 'full'
             },
             {
-                path: '',
-                redirectTo: 'inicio',
-                pathMatch: 'full'
+                path: '**',
+                redirectTo: 'inicio'
             }
         ]
+    },
+    {
+        path: 'login',
+        loadComponent: () => import('./pages/login/login.component'),
+        canActivate: [LoginGuard] // Si ya está logeado, lo redirige
     },
     {
         path: '',

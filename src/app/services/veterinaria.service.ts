@@ -13,6 +13,10 @@ export class VeterinariaService {
   constructor() { }
 
 
+  loginAuth(data: any): Observable<any> {
+    return this.http.post(`${environment.apiBackend}/veterinaria/auth-login`, data);
+  }
+
   // ===== IDENTIFICACIÓN =====
   getReniec(data: any): Observable<any> {
     return this.http.post(`${environment.apiBackend}/veterinaria/sel-reniec`, data);

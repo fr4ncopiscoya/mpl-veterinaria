@@ -16,7 +16,7 @@ export class CarrouselComponent {
 
   carouselItems:carousel[] = [
     {
-      image: '../../../../../assets/images/flayer-pets.jpg',
+      image: '../../../../../assets/images/banner_hero.png',
       name: 'Mascotas',
       link: '/veterinaria/reserva'
     },
