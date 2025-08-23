@@ -515,7 +515,7 @@ export default class ReservaComponent implements OnInit {
       method: 'POST',
       sessiontoken: sessionToken,
       channel: 'web',
-      merchantid: this.merchantDEV,
+      merchantid: this.merchantPRD,
       purchasenumber: this.purchaseNumber,
       amount: this.reservaAmount,
       expirationminutes: '10',

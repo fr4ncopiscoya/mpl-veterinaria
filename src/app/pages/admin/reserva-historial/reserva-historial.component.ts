@@ -66,6 +66,7 @@ export default class ReservaHistorialComponent implements OnInit {
 
   ngOnInit(): void {
     this.getServicios();
+    this.searchReservas();
   }
 
   resetFields() {
