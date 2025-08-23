@@ -30,12 +30,16 @@ export default class ReservaHistorialComponent implements OnInit {
   DATATABLE_ID = 'table-card';
   columnsReserva = signal<any[]>([]);
 
-  dateToday = new Date().toISOString().split('T')[0]; // "2025-08-14"
+  dateToday: string = (() => {
+    const today = new Date();
+    return today.getFullYear() + '-' +
+      String(today.getMonth() + 1).padStart(2, '0') + '-' +
+      String(today.getDate()).padStart(2, '0');
+  })();
+
 
   dataServicios = signal<DataServicios[]>([]);
   dataHistorialReserva = signal<any[][]>([]);
-  // fechaInicio = signal<string>('');
-  // fechaFin = signal<string>('');
   fechaInicio = signal<string>(this.dateToday);
   fechaFin = signal<string>(this.dateToday);
   fechaCita = signal<string>('');
@@ -95,7 +99,7 @@ export default class ReservaHistorialComponent implements OnInit {
     })
   }
 
-  changeEstado(id_reserva:number, estado:string ){
+  changeEstado(id_reserva: number, estado: string) {
     console.log('id_reserva', id_reserva);
     console.log('estado', estado);
 
@@ -105,12 +109,12 @@ export default class ReservaHistorialComponent implements OnInit {
     }
 
     this.veterinariaService.updReservaEstado(post).subscribe({
-      next:(res)=>{
+      next: (res) => {
         console.log('res: ', res);
       },
-      error:(error)=>{
+      error: (error) => {
         console.log('error: ', error);
-        
+
       }
     })
   }
