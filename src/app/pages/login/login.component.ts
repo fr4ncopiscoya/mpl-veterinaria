@@ -3,6 +3,8 @@ import { ToastComponent } from '../../components/toast/toast.component';
 import { Router } from '@angular/router';
 import { SessionService } from '../../services/session.service';
 import { VeterinariaService } from '../../services/veterinaria.service';
+import { UppercaseDirective } from "../../shared/directives/uppercase.directive";
+import { CommonModule, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-login',
@@ -53,16 +55,22 @@ export default class LoginComponent {
         switch (status) {
           case true:
             this.toastComponent.showToast('Inicio de sesión correcto', 'success');
+            console.log('res? ', res);
+            
 
-            this.session.user_id.set(res.id_usuario);
-            this.session.user_name.set(res.username);
+            // this.session.user_id.set(res.id_usuario);
+            // this.session.user_name.set(res.username);
             // this.session.menus.set(res.menus);
 
             // Guardar en localStorage que está logueado
             localStorage.setItem('session-logged', 'true'); //con esto valida permiso de ruta
-            // localStorage.setItem('user-id', res.id_usuario);
-            // localStorage.setItem('username', res.username);
-            // localStorage.setItem('menus', JSON.stringify(res.menus));
+            localStorage.setItem('user-data', JSON.stringify(res.user));
+
+            // localStorage.setItem('user-id', res.user.persona_id);
+            // localStorage.setItem('user-name', res.user.persona_nombre);
+            // localStorage.setItem('user-apepat', res.user.persona_apepaterno);
+            // localStorage.setItem('user-apemat', res.user.persona_apematerno);
+            // localStorage.setItem('username', res.user.user_name);
 
             setTimeout(() => {
               this.route.navigate(['/admin']);
