@@ -1391,11 +1391,13 @@ label {
 # Site content
 --------------------------------------------------------------*/
 .is-boxed {
-  background: #0b1524;
+  /* background: #0b1524; */
+  background: #178bb2;
 }
 
 .body-wrap {
-  background: #06101F;
+  background: #053A52;
+  /* background: #06101F; */
   overflow: hidden;
   /* Sticky footer */
   display: flex;

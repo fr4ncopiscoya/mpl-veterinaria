@@ -16,6 +16,7 @@ import { IpService } from '../../services/ip-service.service';
 import { Router } from '@angular/router';
 import { UppercaseDirective } from '../../shared/directives/uppercase.directive';
 import { interval, Subscription } from 'rxjs';
+import { RouterLink } from '@angular/router';
 
 declare const VisanetCheckout: any;
 
@@ -67,8 +68,9 @@ interface DataRazas {
     MatStepperModule,
     MatButtonModule,
     DatePipe,
-    UppercaseDirective
-  ],
+    UppercaseDirective,
+    RouterLink
+],
   templateUrl: './reserva.component.html',
   // styleUrl: ,
   styleUrls: [
@@ -95,6 +97,8 @@ export default class ReservaComponent implements OnInit {
   // dataRazas = signal<string[]>([]);
 
   tipoDocumento = signal<number>(1);
+  numDocCli = signal<string>('');
+  maxLenghDoc = signal<number>(7);
 
 
   dateFormGroup: FormGroup;
@@ -113,6 +117,8 @@ export default class ReservaComponent implements OnInit {
   contadorSub!: Subscription;
   minutos: number = 0;
   segundos: number = 0;
+
+  aceptoTerminos = signal<boolean>(false);
 
   //   reservaAmount: number = 50.00; // Monto valor de la reserva
   // isReadyToPay: boolean = false; // Esto se activa cuando ya estas ready para pagar
@@ -165,6 +171,13 @@ export default class ReservaComponent implements OnInit {
     const dateStr = date.toISOString().split('T')[0];
     return this.dataFechasDisponibles().includes(dateStr);
   };
+
+  getServicioDescri(): string {
+    const id = this.dateFormGroup.value.servicio;
+    const servicio = this.dataServicios().find(s => s.servicio_id === id);
+    return servicio ? servicio.servicio_descri : '';
+  }
+
 
   getIp() {
     this.ipService.getPublicIp().subscribe((res: any) => {
@@ -220,9 +233,13 @@ export default class ReservaComponent implements OnInit {
     const rawPet = this.petFormGroup.getRawValue();
     const rawDate = this.dateFormGroup.getRawValue();
 
+    console.log('numeroDoc: ', this.numDocCli());
+    
+
     const post = {
       tipdoc_id: rawUser.tipdoc,
-      persona_numdoc: rawUser.numdoc,
+      persona_numdoc: this.numDocCli(),
+      // persona_numdoc: rawUser.numdoc,
       persona_nombre: rawUser.nombres,
       persona_apepaterno: rawUser.apellidos?.split(' ')[0] || '',
       persona_apematerno: rawUser.apellidos?.split(' ')[1] || '',
@@ -238,10 +255,6 @@ export default class ReservaComponent implements OnInit {
       estado_id: 1,
       observaciones: 'Observaciones aquí'
     };
-
-    console.log('purcharseNumber: ', this.purchaseNumber);
-    console.log('reservaAmount: ', this.reservaAmount);
-    
 
     if (this.purchaseNumber !== '' && this.reservaAmount > 0.1) {
       this.openPaymentForm();
@@ -259,6 +272,7 @@ export default class ReservaComponent implements OnInit {
 
             this.purchaseNumber = res[0].numero_liquidacion;
             this.reservaAmount = res[0].monto_a_pagar;
+            this.sweetAlertService.success('', res[0].mensaje);
 
             // 🔹 Tomar minutos de bloqueo
             const minutosBloqueo = res[0].minutos_bloqueo || 5; // fallback 5 minutos
@@ -360,6 +374,12 @@ export default class ReservaComponent implements OnInit {
   changeTipoDocumento(value: number) {
     this.tipoDocumento.set(value);
 
+    if(value == 1){
+      this.maxLenghDoc.set(8)
+    }else{
+      this.maxLenghDoc.set(9)
+    }
+
     this.userFormGroup.patchValue({
       numdoc: '',
       nombres: '',
@@ -378,12 +398,12 @@ export default class ReservaComponent implements OnInit {
 
   searchPersona(numdoc: string) {
     const tipDoc = this.userFormGroup.get('tipdoc')?.value;
-
+    const numDoc = this.userFormGroup.get('numdoc')?.value
     const nombres = this.userFormGroup.get('nombres')?.value;
     console.log('nombres: ', nombres);
 
 
-    if (nombres === '') {
+    if (nombres === '' ) {
       if ((tipDoc == 1 && numdoc.length === 8)) {
         this.getReniec(numdoc);
       } else if ((tipDoc == 1 && numdoc.length > 5 && numdoc.length < 8)) {
@@ -409,6 +429,8 @@ export default class ReservaComponent implements OnInit {
     const post = {
       nuDniConsulta: query
     };
+
+    this.numDocCli.set(query);
 
     this.veterinariaService.getReniec(post).subscribe({
       next: (res) => {
@@ -573,13 +595,6 @@ export default class ReservaComponent implements OnInit {
       next: (response) => {
         if (response.success) {
           console.log('¡Pago exitoso!', response);
-          // this.purcharseNumber.set(response.data?.order?.purchaseNumber);
-          // this.transactionDate.set(response.data?.order?.purchaseNumber);
-          // this.amount.set(response.data?.order?.amount);
-          // this.currency.set(response.data?.order?.currency);
-          // this.card.set(response.data?.dataMap?.CARD);
-          // this.brand.set(response.data?.dataMap?.BRAND);
-
           // this.paymentService.setPaymentData(response.data);
           // this.router.navigate(['/success-payment', this.purchaseNumber]);
 

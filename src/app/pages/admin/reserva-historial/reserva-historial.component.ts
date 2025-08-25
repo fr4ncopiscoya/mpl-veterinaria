@@ -122,7 +122,6 @@ export default class ReservaHistorialComponent implements OnInit {
       },
       error: (error) => {
         console.log('error: ', error);
-
       }
     })
   }

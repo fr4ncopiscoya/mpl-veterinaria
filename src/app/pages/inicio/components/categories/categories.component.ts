@@ -20,7 +20,8 @@ export class CategoriesComponent {
   categoriesItems:categories[] = [
     {
       image: '../../../../../assets/images/mascota.jpg',
-      title: 'Registra a tu Mascota (carnet digital)',
+      title: 'Empadronamiento de mascota y DNI',
+      // title: 'Registra a tu Mascota (carnet digital)',
       text: 'Registra tu mascota aqui y obten su carnet para una mejor identificación.',
       textButton: 'Registrar',
       link: 'https://portal.muniplibre.gob.pe/empadronamiento-mascotas/m-add/'
@@ -34,9 +35,9 @@ export class CategoriesComponent {
     },
     {
       image: '../../../../../assets/images/veterinarian.jpg',
-      title: 'Reserva tu cita en la veterinaria',
-      text: 'Por el momento no contamos con este servico, pero muy pronto estará activo.',
-      // text: 'Reserva una cita en la veterinaria de Pueblo Libre para atender a tu mascota.',
+      title: 'Reserva tu cita',
+      // text: 'Por el momento no contamos con este servico, pero muy pronto estará activo.',
+      text: 'Reserva una cita en el consultorio veterinario para atender a tu mascota.',
       textButton: 'Reservar',
       link: 'https://apps.muniplibre.gob.pe/veterinaria/veterinaria/reserva'
     }

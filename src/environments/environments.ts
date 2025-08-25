@@ -3,6 +3,6 @@ export const environment = {
     systemName: 'Veterinaria',
 
     //Urls
-    // apiBackend: 'https://appsapi.muniplibre.gob.pe',
-    apiBackend: 'http://127.0.0.1:8000',
+    apiBackend: 'https://appsapi.muniplibre.gob.pe',
+    // apiBackend: 'http://127.0.0.1:8000',
 };

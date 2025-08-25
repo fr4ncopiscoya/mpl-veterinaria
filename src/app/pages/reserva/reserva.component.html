@@ -78,7 +78,7 @@
                             </mat-form-field>
                             <mat-form-field appearance="fill" class="w-100">
                                 <mat-label>N° Doc</mat-label>
-                                <input matInput formControlName="numdoc" type="number" #txtNumdoc
+                                <input matInput formControlName="numdoc" [maxlength]="maxLenghDoc()" type="number" #txtNumdoc
                                     (blur)="searchPersona(txtNumdoc.value)"
                                     (keyup.enter)="searchPersona(txtNumdoc.value)">
                             </mat-form-field>
@@ -100,7 +100,7 @@
                             </mat-form-field>
                             <mat-form-field appearance="fill" class="w-100">
                                 <mat-label>Telefono</mat-label>
-                                <input matInput formControlName="telefono">
+                                <input type="number" matInput formControlName="telefono">
                             </mat-form-field>
                         </div>
                         <div>
@@ -111,7 +111,7 @@
                     </form>
                 </mat-step>
 
-                <!-- Paso 2: Datos mascota -->
+                <!-- Paso 3: Datos mascota -->
                 <mat-step [stepControl]="petFormGroup">
                     <form [formGroup]="petFormGroup">
                         <!-- <ng-template matStepLabel>Datos Mascota</ng-template> -->
@@ -152,15 +152,29 @@
                 <mat-step>
                     <!-- <ng-template matStepLabel>Pago</ng-template> -->
                     <p><strong> RESUMEN DE LA RESERVA:</strong></p>
-                    <p><strong>Fecha:</strong> {{ dateFormGroup.value.date | date }}</p>
-                    <p><strong>Hora:</strong> {{ dateFormGroup.value.time }}</p>
-                    <!-- <p><strong>Persona:</strong> {{ userFormGroup.value.nombres }} {{ userFormGroup.value.apellidos }}</p> -->
-                    <p><strong>Correo:</strong> {{ userFormGroup.value.correo }}</p>
-                    <p><strong>Telefono:</strong> {{ userFormGroup.value.telefono }}</p>
-                    <!-- <p><strong>Mascota:</strong> {{ petFormGroup.value.nombre }}</p> -->
-                    <!-- <p><strong>Motivo:</strong> {{ petFormGroup.value.motivo }}</p> -->
+                    <div class="content-reserva">
+                        <p><strong>Fecha:</strong> {{ dateFormGroup.value.date | date }}</p>
+                        <p><strong>Hora:</strong> {{ dateFormGroup.value.time }}</p>
+                        <p><strong>Persona:</strong> {{ userFormGroup.getRawValue().nombres }} {{
+                            userFormGroup.getRawValue().apellidos }}</p>
+                        <p><strong>Correo:</strong> {{ userFormGroup.value.correo }}</p>
+                        <p><strong>Telefono:</strong> {{ userFormGroup.value.telefono }}</p>
+                        <p><strong>Mascota:</strong> {{ petFormGroup.value.nombre }}</p>
+                        <p><strong>Servicio:</strong> {{ getServicioDescri() }}</p>
 
-                    <button mat-button color="primary" (click)="saveReservaCita();">Pagar</button>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="flexCheckDefault"
+                            [checked]="aceptoTerminos()" (change)="aceptoTerminos.set($any($event.target).checked)">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            <a href="https://apps.muniplibre.gob.pe/veterinaria/veterinaria/terminos" target="_blank">
+                                Aceptar Términos y Condiciones
+                            </a>
+                        </label>
+                    </div>
+
+                    <button mat-raised-button color="primary" class="mt-4" (click)="saveReservaCita();"
+                        *ngIf="aceptoTerminos()">Pagar</button>
                 </mat-step>
             </mat-horizontal-stepper>
 

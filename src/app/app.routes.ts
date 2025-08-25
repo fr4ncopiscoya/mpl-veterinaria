@@ -26,6 +26,10 @@ export const routes: Routes = [
                 loadComponent: () => import('./pages/reserva/reserva.component'),
             },
             {
+                path: 'terminos',
+                loadComponent: () => import('./pages/reserva/terminos-condiciones/terminos-condiciones.component'),
+            },
+            {
                 path: '**',
                 redirectTo: 'inicio'
             }
