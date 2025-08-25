@@ -82,3 +82,111 @@
     </div>
     <!-- end col -->
 </div>
+
+
+<app-modal #editarReserva [title]="'EDITAR RESERVA'" [size]="''" [bgcolor]="'bg-primary'">
+
+    <div modal-body>
+        <div class="d-flex flex-column gap-3">
+            <div class="row">
+                <div class="col-6">
+                    <label for="name" class="form-label">Fecha Cita</label>
+                    <input type="text" [value]="cita_fecha()" class="form-control" required disabled />
+                </div>
+                <div class="col-6">
+                    <label for="name" class="form-label">Hora Cita</label>
+                    <input type="text" [value]="cita_hora()" class="form-control" required disabled />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <label for="name" class="form-label">Servicio</label>
+                    <input type="text" [value]="cita_servicio()" class="form-control" required disabled />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <label for="name" class="form-label">Nombres</label>
+                    <input type="text" [value]="cliente_nombre()" class="form-control" required disabled />
+                </div>
+                <!-- <div class="col-6">
+                    <label for="name" class="form-label">Apellidos</label>
+                    <input type="text" [value]="usu_apellidos()" (input)="usu_apellidos.set($any($event.target).value)"
+                        class="form-control" required />
+                </div> -->
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <label for="name" class="form-label">Mascota</label>
+                    <input type="text" [value]="cliente_mascota()" (input)="cliente_mascota.set($any($event.target).value)" class="form-control" required/>
+                </div>
+                <div class="col-6">
+                    <label for="country" class="form-label">Estado</label>
+                    <select class="form-select" id="area"
+                        [ngModel]="reserva_estado()" (ngModelChange)="reserva_estado.set($event)" required>
+                        <option *ngFor="let item of dataEstadoReserva()" [value]="item.estado_id">
+                            {{ item.estado_descri }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <label for="name" class="form-label">Observaciones</label>
+                    <textarea [value]="this.cita_observaciones()" (input)="cita_observaciones.set($any($event.target).value)" class="form-control"> </textarea>
+                    <!-- <input type="text" [value]="cita_fecha()"
+                        class="form-control" required disabled/> -->
+                </div>
+            </div>
+
+            <!-- <div class="row">
+                <div class="col-6">
+                    <label for="name" class="form-label">Usuario</label>
+                    <input type="text" [value]="usu_usuario()" (input)="usu_usuario.set($any($event.target).value)"
+                        class="form-control" required />
+                </div>
+                <div class="col-6">
+                    <label for="name" class="form-label">Contraseña</label>
+                    <input type="password" [value]="usu_password()"
+                        (input)="usu_password.set($any($event.target).value)" class="form-control" required />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <label for="phoneNumber" class="form-label">DNI</label>
+                    <input type="phone" [value]="usu_dni()" (input)="usu_dni.set($any($event.target).value)"
+                        class="form-control" required />
+                </div>
+                <div class="col-6">
+                    <label for="country" class="form-label">Estado</label>
+                    <select [ngClass]="usu_estado() == 1 ? 'bg-success' : 'bg-danger'" class="form-select" id="area"
+                        [ngModel]="usu_estado()" (ngModelChange)="usu_estado.set($event)" required>
+                        <option *ngFor="let item of status" [value]="item.ESTATUS">
+                            {{ item.name }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <label for="email" class="form-label">Correo</label>
+                <input type="email" [value]="usu_correo()" (input)="usu_correo.set($any($event.target).value)"
+                    class="form-control" required />
+            </div>
+            <div>
+                <label for="country" class="form-label">Area</label>
+                <select class="form-select" id="area" [ngModel]="usu_area()" (ngModelChange)="usu_area.set($event)"
+                    required>
+                    <option *ngFor="let item of dataAreas()" [value]="item.id_area">
+                        {{ item.nombre }}
+                    </option>
+                </select>
+            </div> -->
+        </div>
+        <!-- </form> -->
+    </div>
+
+    <div modal-footer>
+        <button type="button" [ngClass]="'bg-primary'" class="btn w-sm btn-primary"
+            (click)="updateReserva()">ACTUALIZAR</button>
+    </div>
+</app-modal>

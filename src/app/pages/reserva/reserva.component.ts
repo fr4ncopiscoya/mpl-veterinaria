@@ -246,7 +246,7 @@ export default class ReservaComponent implements OnInit {
     if (this.purchaseNumber !== '' && this.reservaAmount > 0.1) {
       this.openPaymentForm();
     } else {
-      this.veterinariaService.postReservarCita(post).subscribe({
+      this.veterinariaService.insReservarCita(post).subscribe({
         next: (res) => {
           console.log('res: ', res[0]);
 

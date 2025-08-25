@@ -12510,5 +12510,12 @@ span.flatpickr-weekday{
 .chat-input-feedback.show{
     display:block
 }
+
+input:disabled {
+  color: #333; /* Color del texto */
+  cursor: not-allowed; /* Cursor opcional */
+  border: 1px solid #aaa; /* Borde opcional */
+}
+
 /*# sourceMappingURL=app.min.css.map */
  

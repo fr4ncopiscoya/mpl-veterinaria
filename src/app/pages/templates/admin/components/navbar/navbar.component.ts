@@ -17,13 +17,14 @@ export class NavbarComponent {
   username = signal<string>('');
   name = signal<string>('');
   apepaterno = signal<string>('');
-  apematerno = signal<string>('');
   role = signal<string>('');
 
   constructor() {
 
     const userData = JSON.parse(localStorage.getItem('user-data') || '{}');
-    this.username.set(userData.persona_nombre);
+    this.username.set(userData.user_name);
+    this.name.set(userData.persona_nombre)
+    this.apepaterno.set(userData.persona_apepaterno);
     this.role.set(userData.roles);
   }
 

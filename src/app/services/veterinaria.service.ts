@@ -41,8 +41,11 @@ export class VeterinariaService {
   getReservaCita(data: any): Observable<any> {
     return this.http.post(`${environment.apiBackend}/veterinaria/sel-reserva`, data);
   }
-  postReservarCita(data: any): Observable<any> {
+  insReservarCita(data: any): Observable<any> {
     return this.http.post(`${environment.apiBackend}/veterinaria/ins-reserva`, data);
+  }
+  updReservarCita(data: any): Observable<any> {
+    return this.http.post(`${environment.apiBackend}/veterinaria/upd-reserva`, data);
   }
   updReservaEstado(data: any): Observable<any> {
     return this.http.post(`${environment.apiBackend}/veterinaria/upd-reservaestado`, data);
@@ -52,5 +55,8 @@ export class VeterinariaService {
   }
   getServicios(data: any): Observable<any> {
     return this.http.post(`${environment.apiBackend}/veterinaria/sel-allservicios`, data);
+  }
+  getEstadoReserva(data: any): Observable<any> {
+    return this.http.post(`${environment.apiBackend}/veterinaria/sel-estadoreserva`, data);
   }
 }
