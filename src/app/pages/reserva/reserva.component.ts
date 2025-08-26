@@ -17,6 +17,7 @@ import { Router } from '@angular/router';
 import { UppercaseDirective } from '../../shared/directives/uppercase.directive';
 import { interval, Subscription } from 'rxjs';
 import { RouterLink } from '@angular/router';
+import { environment } from '../../../environments/environments';
 
 declare const VisanetCheckout: any;
 
@@ -69,7 +70,6 @@ interface DataRazas {
     MatButtonModule,
     DatePipe,
     UppercaseDirective,
-    RouterLink
 ],
   templateUrl: './reserva.component.html',
   // styleUrl: ,
@@ -533,7 +533,7 @@ export default class ReservaComponent implements OnInit {
   private configureNiubiz(sessionToken: string): void {
     VisanetCheckout.configure({
       // action: 'https:///127.0.0.1:8000/niubiz/process-payment/' + this.purchaseNumber + '/' + this.reservaAmount + '/' + this.urlAddress,
-      action: 'https://appsapi.muniplibre.gob.pe/niubiz/process-payment/' + this.purchaseNumber + '/' + this.reservaAmount + '/' + this.urlAddress,
+      action: environment.apiBackend + '/niubiz/process-payment/' + this.purchaseNumber + '/' + this.reservaAmount + '/' + this.urlAddress,
       method: 'POST',
       sessiontoken: sessionToken,
       channel: 'web',
