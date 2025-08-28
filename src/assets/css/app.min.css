@@ -12512,10 +12512,19 @@ span.flatpickr-weekday{
 }
 
 input:disabled {
+  /* background-color: #f0f0f0; Color de fondo */
   color: #333; /* Color del texto */
   cursor: not-allowed; /* Cursor opcional */
   border: 1px solid #aaa; /* Borde opcional */
 }
+
+select:disabled {
+  background-color: #d3d3d3 !important;
+  color: #333;               /* Color del texto */
+  cursor: not-allowed;       /* Cursor */
+  border: 1px solid #aaa;    /* Borde opcional */
+}
+
 
 /*# sourceMappingURL=app.min.css.map */
  

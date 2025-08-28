@@ -44,6 +44,9 @@ export class VeterinariaService {
   insReservarCita(data: any): Observable<any> {
     return this.http.post(`${environment.apiBackend}/veterinaria/ins-reserva`, data);
   }
+  insExtraPayment(data: any): Observable<any> {
+    return this.http.post(`${environment.apiBackend}/veterinaria/ins-extrapay`, data);
+  }
   updReservarCita(data: any): Observable<any> {
     return this.http.post(`${environment.apiBackend}/veterinaria/upd-reserva`, data);
   }

@@ -36,8 +36,14 @@ export class PaymentService {
    * @param payload Los datos necesarios para el pago final.
    * @returns Un Observable con la respuesta del backend.
    */
-  processFinalPayment(payload: PaymentPayload): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/process-payment`, payload);
+  processFinalPayment(payload: PaymentPayload, tipo: 'reserva' | 'extra' = 'reserva'): Observable<any> {
+    const endpoint =
+      tipo === 'extra'
+        ? `${this.apiUrl}/process-payment-extra`
+        : `${this.apiUrl}/process-payment`;
+
+    return this.http.post<any>(endpoint, payload);
   }
+
 
 }

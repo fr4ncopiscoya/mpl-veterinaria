@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms'; // For [(ngModel)]
 import { h } from 'gridjs';
 import { ModalComponent } from "../../../components/modal/modal.component";
 import { SweetAlertService } from '../../../services/sweet-alert.service';
-import { UppercaseDirective } from "../../../shared/directives/uppercase.directive";
+import { NiubizService } from '../../../services/niubiz.service';
 
 interface EstadoReserva {
   estado_id: number;
@@ -16,13 +16,16 @@ interface EstadoReserva {
 
 @Component({
   selector: 'app-reserva-historial',
-  imports: [CommonModule, ModalComponent, FormsModule, UppercaseDirective],
+  imports: [CommonModule, ModalComponent, FormsModule],
   templateUrl: './reserva-historial.component.html',
   styleUrl: './reserva-historial.component.css'
 })
 export default class ReservaHistorialComponent implements OnInit {
 
   @ViewChild('editarReserva') editarReservaModal!: ModalComponent;
+  @ViewChild('extraPayment') extraPaymentModal!: ModalComponent;
+
+  private niubizService = inject(NiubizService);
 
   rowsReserva: {
     reserva_id: number;
@@ -50,11 +53,15 @@ export default class ReservaHistorialComponent implements OnInit {
   reserva_id = signal<number>(0);
   cliente_nombre = signal<string>('');
   cliente_mascota = signal<string>('');
+  cliente_correo = signal<string>('');
+  cliente_telefono = signal<string>('');
   cita_hora = signal<string>('');
   cita_fecha = signal<string>('');
   cita_servicio = signal<string>('');
+  servicio_id = signal<number>(0);
   cita_observaciones = signal<string>('');
   reserva_estado = signal<number>(0);
+  purchaseNumber = signal<string>('');
 
   dateToday: string = (() => {
     const today = new Date();
@@ -71,6 +78,12 @@ export default class ReservaHistorialComponent implements OnInit {
   fechaCita = signal<string>('');
   servicio = signal<number>(0);
   estado = signal<number>(0);
+
+
+  servicioSeleccionado = signal<number>(0);
+  // servicioSeleccionado: number | null = 0;
+  montoSeleccionado = signal<number>(0);
+  // montoSeleccionado: number | null = null;
 
   constructor(
   ) {
@@ -91,7 +104,7 @@ export default class ReservaHistorialComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getServicios();
+    this.getAllServicios();
     this.searchReservas();
     this.getEstadoReserva();
   }
@@ -105,13 +118,59 @@ export default class ReservaHistorialComponent implements OnInit {
     this.gridService.destroy(this.DATATABLE_ID);
   }
 
+  onServicioChange(servicioId: number) {
+    this.servicioSeleccionado.set(servicioId);
+    // this.servicioSeleccionado = servicioId;
+
+    // Buscar el servicio dentro del array
+    const servicio = this.dataServicios().find(s => s.servicio_id == servicioId);
+
+    if (servicio) {
+      this.montoSeleccionado.set(servicio.servicio_precio);
+      console.log('id: ', servicio);
+      console.log('monto: ', this.montoSeleccionado());
+      // this.montoSeleccionado = servicio.servicio_precio;
+    }
+  }
+
+  openEditReserva(data: any) {
+    this.reserva_id.set(data.reserva_id);
+    this.cliente_nombre.set(data.nombre_cliente);
+    this.cliente_mascota.set(data.nombre_mascota);
+    this.cita_hora.set(data.hora_cita);
+    this.cita_fecha.set(data.fecha_cita);
+    this.cliente_correo.set(data.cliente_correo);
+    this.cliente_telefono.set(data.cliente_telefono);
+    this.servicio_id.set(data.servicio_id);
+    this.cita_observaciones.set(data.observaciones);
+    this.reserva_estado.set(data.estado_id);
+    this.editarReservaModal.open();
+  }
+
+  openExtraPayment(data: any) {
+    console.log('data-extra: ', data);
+    this.reserva_id.set(data.reserva_id);
+    this.servicio_id.set(data.servicio_id);
+    this.cliente_nombre.set(data.nombre_cliente);
+    this.cliente_mascota.set(data.nombre_mascota);
+    this.cliente_correo.set(data.cliente_correo);
+    this.cliente_telefono.set(data.cliente_telefono);
+
+    this.extraPaymentModal.open();
+  }
+
   changeTipoEstado(value: number) {
     this.estado.set(value);
   }
 
+  // onServicioChange(value:number){
+  //   console.log('value: ', value);
+  // }
+
   changeTipoServicio(value: number) {
     this.servicio.set(value);
   }
+
   getEstadoReserva() {
     const post = {}
 
@@ -126,7 +185,7 @@ export default class ReservaHistorialComponent implements OnInit {
     })
   }
 
-  getServicios() {
+  getAllServicios() {
     const post = {}
 
     this.veterinariaService.getServicios(post).subscribe({
@@ -180,6 +239,7 @@ export default class ReservaHistorialComponent implements OnInit {
       { name: "Nombre cliente" },
       { name: "Nombre mascota" },
       { name: "Servicio" },
+      { name: "Otros Servicios" },
       { name: "Observaciones" },
       {
         name: "Estado",
@@ -216,6 +276,13 @@ export default class ReservaHistorialComponent implements OnInit {
               // onclick: () => console.log('reserva data: ', item) // ahora SI sale el objeto completo
               onclick: () => self.openEditReserva(item)
             }, h('i', { className: 'bi bi-pencil-fill' })),
+
+            h('a', {
+              className: 'text-muted px-1 d-block viewlist-btn cursor-pointer',
+              title: 'Pago Extra',
+              // onclick: () => console.log('reserva data: ', item) // ahora SI sale el objeto completo
+              onclick: () => self.openExtraPayment(item)
+            }, h('i', { className: 'bi bi-currency-dollar' })),
           ]);
         }
       }
@@ -235,6 +302,7 @@ export default class ReservaHistorialComponent implements OnInit {
           r.nombre_cliente,
           r.nombre_mascota,
           r.nombre_servicio,
+          r.pagos_extra,
           r.observaciones,
           r.nombre_estado
         ]);
@@ -252,23 +320,12 @@ export default class ReservaHistorialComponent implements OnInit {
     });
   }
 
-  openEditReserva(data: any) {
-    this.reserva_id.set(data.reserva_id);
-    this.cliente_nombre.set(data.nombre_cliente);
-    this.cliente_mascota.set(data.nombre_mascota);
-    this.cita_hora.set(data.hora_cita);
-    this.cita_fecha.set(data.fecha_cita);
-    this.cita_servicio.set(data.nombre_servicio);
-    this.cita_observaciones.set(data.observaciones);
-    this.reserva_estado.set(data.estado_id);
-    this.editarReservaModal.open();
-  }
-
-
   updateReserva() {
     const post = {
       reserva_id: this.reserva_id(),
       estado_id: this.reserva_estado(),
+      cliente_telefono : this.cliente_telefono(),
+      cliente_correo : this.cliente_correo(),
       observaciones: this.cita_observaciones(),
       nombre_mascota: this.cliente_mascota().toLocaleUpperCase()
     }
@@ -291,4 +348,50 @@ export default class ReservaHistorialComponent implements OnInit {
     }
   }
 
+  payExtraService() {
+    const post = {
+      reserva_id: this.reserva_id(),
+      servicio_id: this.servicioSeleccionado()
+    }
+
+    console.log('reserva-id: ', this.reserva_id());
+    console.log('servicio-id: ', this.servicioSeleccionado());
+    console.log('servicio-monto: ', this.montoSeleccionado());
+    console.log('cliente-correo: ', this.cliente_correo());
+    console.log('cliente-telefono: ', this.cliente_telefono());
+
+    this.veterinariaService.insExtraPayment(post).subscribe({
+      next: (res) => {
+        console.log('response: ', res[0]);
+        if (res[0].estado == "error") {
+          this.sweetAlertService.error('', res[0].mensaje);
+        } else {
+          this.purchaseNumber.set(res[0].numero_liquidacion);
+          this.sweetAlertService.success('', res[0].mensaje);
+
+          this.openPaymentForm();
+          // this.niubizService.initPayment(
+          //   this.purchaseNumber(),
+          //   this.montoSeleccionado(),
+          //   this.cliente_correo(),
+          //   this.cliente_telefono(),
+          // );
+        }
+      },
+      error: (error) => {
+        console.log('error: ', error);
+
+      }
+    })
+  }
+
+  openPaymentForm(): void {
+    this.niubizService.initPayment(
+      this.purchaseNumber(),
+      this.montoSeleccionado(),
+      this.cliente_correo(),
+      this.cliente_telefono(),
+      'extra'
+    );
+  }
 }

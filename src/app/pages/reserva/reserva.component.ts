@@ -18,8 +18,9 @@ import { UppercaseDirective } from '../../shared/directives/uppercase.directive'
 import { interval, Subscription } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { environment } from '../../../environments/environments';
+import { NiubizService } from '../../services/niubiz.service';
 
-declare const VisanetCheckout: any;
+// declare const VisanetCheckout: any;
 
 interface DatosPersona {
   apPrimer: string;
@@ -70,7 +71,7 @@ interface DataRazas {
     MatButtonModule,
     DatePipe,
     UppercaseDirective,
-],
+  ],
   templateUrl: './reserva.component.html',
   // styleUrl: ,
   styleUrls: [
@@ -83,6 +84,7 @@ export default class ReservaComponent implements OnInit {
   private veterinariaService = inject(VeterinariaService);
   private sweetAlertService = inject(SweetAlertService);
   private ipService = inject(IpService);
+  private niubizService = inject(NiubizService);
   private router = inject(Router);
 
   private merchantDEV = '456879852'
@@ -119,10 +121,6 @@ export default class ReservaComponent implements OnInit {
   segundos: number = 0;
 
   aceptoTerminos = signal<boolean>(false);
-
-  //   reservaAmount: number = 50.00; // Monto valor de la reserva
-  // isReadyToPay: boolean = false; // Esto se activa cuando ya estas ready para pagar
-  // purchaseNumber: string = '123456'
 
   constructor(private fb: FormBuilder, private paymentService: PaymentService) {
     this.dateFormGroup = this.fb.group({
@@ -233,13 +231,9 @@ export default class ReservaComponent implements OnInit {
     const rawPet = this.petFormGroup.getRawValue();
     const rawDate = this.dateFormGroup.getRawValue();
 
-    console.log('numeroDoc: ', this.numDocCli());
-    
-
     const post = {
       tipdoc_id: rawUser.tipdoc,
       persona_numdoc: this.numDocCli(),
-      // persona_numdoc: rawUser.numdoc,
       persona_nombre: rawUser.nombres,
       persona_apepaterno: rawUser.apellidos?.split(' ')[0] || '',
       persona_apematerno: rawUser.apellidos?.split(' ')[1] || '',
@@ -374,9 +368,9 @@ export default class ReservaComponent implements OnInit {
   changeTipoDocumento(value: number) {
     this.tipoDocumento.set(value);
 
-    if(value == 1){
+    if (value == 1) {
       this.maxLenghDoc.set(8)
-    }else{
+    } else {
       this.maxLenghDoc.set(9)
     }
 
@@ -398,12 +392,10 @@ export default class ReservaComponent implements OnInit {
 
   searchPersona(numdoc: string) {
     const tipDoc = this.userFormGroup.get('tipdoc')?.value;
-    const numDoc = this.userFormGroup.get('numdoc')?.value
     const nombres = this.userFormGroup.get('nombres')?.value;
-    console.log('nombres: ', nombres);
 
 
-    if (nombres === '' ) {
+    if (nombres === '') {
       if ((tipDoc == 1 && numdoc.length === 8)) {
         this.getReniec(numdoc);
       } else if ((tipDoc == 1 && numdoc.length > 5 && numdoc.length < 8)) {
@@ -528,88 +520,108 @@ export default class ReservaComponent implements OnInit {
     }
   }
 
-  // Cambios Horny
-
-  private configureNiubiz(sessionToken: string): void {
-    VisanetCheckout.configure({
-      // action: 'https:///127.0.0.1:8000/niubiz/process-payment/' + this.purchaseNumber + '/' + this.reservaAmount + '/' + this.urlAddress,
-      action: environment.apiBackend + '/niubiz/process-payment/' + this.purchaseNumber + '/' + this.reservaAmount + '/' + this.urlAddress,
-      method: 'POST',
-      sessiontoken: sessionToken,
-      channel: 'web',
-      merchantid: this.merchantPRD,
-      purchasenumber: this.purchaseNumber,
-      amount: this.reservaAmount,
-      expirationminutes: '10',
-      timeouturl: 'https://apps.muniplibre.gob.pe/veterinaria/veterinaria/reserva',
-      merchantlogo: 'https://apps.muniplibre.gob.pe/assets/images/logo-large.png',
-      merchantname: 'Municipalidad de Pueblo Libre',
-      formbuttoncolor: '#000000',
-      additionalData: {
-        purchaseNumber: this.purchaseNumber,
-        amount: this.reservaAmount,
-        urlAddress: encodeURIComponent(this.urlAddress)
-      },
-      onsuccess: this.handleSuccess.bind(this),
-      onerror: (error: any) => {
-        console.error('Error en el checkout de Niubiz:', error);
-        alert('Ocurrió un error con el pago. Por favor, revisa tus datos.');
-      },
-    });
-  }
-
-  paymentProcessInit() {
-    this.paymentService.getSessionToken(this.reservaAmount, this.userFormGroup.get('correo')?.value, this.userFormGroup.get('telefono')?.value, this.ipAddress).subscribe({
-      next: (response) => {
-        console.log('PASO 1: OBTENGO TOKEN DE SESION:', response);
-        this.configureNiubiz(response.sessionToken);
-        this.isReadyToPay = true;
-        console.log('Token de sesión obtenido y Niubiz configurado.');
-        setTimeout(() => {
-          VisanetCheckout.open();
-        }, 100);
-      },
-      error: (err) => {
-        console.error('Error al obtener el token de sesión', err);
-        alert('No se pudo iniciar el proceso de pago. Por favor, recarga la página.');
-      }
-    });
-  }
+  //niubiz service now
 
   openPaymentForm(): void {
-    this.paymentProcessInit();
+    this.niubizService.initPayment(
+      this.purchaseNumber,
+      this.reservaAmount,
+      this.userFormGroup.get('correo')?.value,
+      this.userFormGroup.get('telefono')?.value,
+      'reserva' // explícito
+    );
   }
 
-  private handleSuccess(data: any): void {
-    console.log('PASO 2: ENVIO INFORMACION DE PAGO AL BACKEND PARA AUTORIZACION:', data);
 
-    const payload: PaymentPayload = {
-      transactionToken: data.transactionToken,
-      purchaseNumber: this.purchaseNumber,
-      amount: this.reservaAmount,
-      ipAddress: this.ipAddress,
-      urlAddress: this.urlAddress
-    };
 
-    this.paymentService.processFinalPayment(payload).subscribe({
-      next: (response) => {
-        if (response.success) {
-          console.log('¡Pago exitoso!', response);
-          // this.paymentService.setPaymentData(response.data);
-          // this.router.navigate(['/success-payment', this.purchaseNumber]);
 
-          // this.updLiquidacionPago();
-        } else {
-          console.error('El pago falló en el backend', response);
-          this.sweetAlertService.error('', 'El pago no pudo ser procesado por el banco. Intenta con otra tarjeta.')
-        }
-      },
-      error: (err) => {
-        console.error('Error de comunicación al procesar el pago final', err);
-        this.sweetAlertService.error('', err)
-      }
-    });
-  }
+
+
+
+
+
+  // Cambios Horny
+
+  // private configureNiubiz(sessionToken: string): void {
+  //   VisanetCheckout.configure({
+  //     // action: 'https:///127.0.0.1:8000/niubiz/process-payment/' + this.purchaseNumber + '/' + this.reservaAmount + '/' + this.urlAddress,
+  //     action: environment.apiBackend + '/niubiz/process-payment/' + this.purchaseNumber + '/' + this.reservaAmount + '/' + this.urlAddress,
+  //     method: 'POST',
+  //     sessiontoken: sessionToken,
+  //     channel: 'web',
+  //     merchantid: this.merchantPRD,
+  //     purchasenumber: this.purchaseNumber,
+  //     amount: this.reservaAmount,
+  //     expirationminutes: '10',
+  //     timeouturl: 'https://apps.muniplibre.gob.pe/veterinaria/veterinaria/reserva',
+  //     merchantlogo: 'https://apps.muniplibre.gob.pe/assets/images/logo-large.png',
+  //     merchantname: 'Municipalidad de Pueblo Libre',
+  //     formbuttoncolor: '#000000',
+  //     additionalData: {
+  //       purchaseNumber: this.purchaseNumber,
+  //       amount: this.reservaAmount,
+  //       urlAddress: encodeURIComponent(this.urlAddress)
+  //     },
+  //     onsuccess: this.handleSuccess.bind(this),
+  //     onerror: (error: any) => {
+  //       console.error('Error en el checkout de Niubiz:', error);
+  //       alert('Ocurrió un error con el pago. Por favor, revisa tus datos.');
+  //     },
+  //   });
+  // }
+
+  // paymentProcessInit() {
+  //   this.paymentService.getSessionToken(this.reservaAmount, this.userFormGroup.get('correo')?.value, this.userFormGroup.get('telefono')?.value, this.ipAddress).subscribe({
+  //     next: (response) => {
+  //       console.log('PASO 1: OBTENGO TOKEN DE SESION:', response);
+  //       this.configureNiubiz(response.sessionToken);
+  //       this.isReadyToPay = true;
+  //       console.log('Token de sesión obtenido y Niubiz configurado.');
+  //       setTimeout(() => {
+  //         VisanetCheckout.open();
+  //       }, 100);
+  //     },
+  //     error: (err) => {
+  //       console.error('Error al obtener el token de sesión', err);
+  //       alert('No se pudo iniciar el proceso de pago. Por favor, recarga la página.');
+  //     }
+  //   });
+  // }
+
+  // openPaymentForm(): void {
+  //   this.paymentProcessInit();
+  // }
+
+  // private handleSuccess(data: any): void {
+  //   console.log('PASO 2: ENVIO INFORMACION DE PAGO AL BACKEND PARA AUTORIZACION:', data);
+
+  //   const payload: PaymentPayload = {
+  //     transactionToken: data.transactionToken,
+  //     purchaseNumber: this.purchaseNumber,
+  //     amount: this.reservaAmount,
+  //     ipAddress: this.ipAddress,
+  //     urlAddress: this.urlAddress
+  //   };
+
+  //   this.paymentService.processFinalPayment(payload).subscribe({
+  //     next: (response) => {
+  //       if (response.success) {
+  //         console.log('¡Pago exitoso!', response);
+  //         // this.paymentService.setPaymentData(response.data);
+  //         // this.router.navigate(['/success-payment', this.purchaseNumber]);
+
+  //         // this.updLiquidacionPago();
+  //       } else {
+  //         console.error('El pago falló en el backend', response);
+  //         this.sweetAlertService.error('', 'El pago no pudo ser procesado por el banco. Intenta con otra tarjeta.')
+  //       }
+  //     },
+  //     error: (err) => {
+  //       console.error('Error de comunicación al procesar el pago final', err);
+  //       this.sweetAlertService.error('', err)
+  //     }
+  //   });
+  // }
 
 
 }
