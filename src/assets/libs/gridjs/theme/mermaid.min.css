@@ -207,7 +207,10 @@ td.gridjs-td {
 td.gridjs-td {
     border: 1px solid #e5e7eb;
     box-sizing: content-box;
-    padding: 12px 24px
+    padding: 12px 24px;
+    /* text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden; */
 }
 
 td.gridjs-td:first-child {
