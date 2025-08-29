@@ -52,7 +52,9 @@ export default class ReservaHistorialComponent implements OnInit {
   //DATA RESERVA
   reserva_id = signal<number>(0);
   cliente_nombre = signal<string>('');
-  cliente_mascota = signal<string>('');
+  mascota_nombre = signal<string>('');
+  mascota_especie = signal<string>('');
+  mascota_raza = signal<string>('');
   cliente_correo = signal<string>('');
   cliente_telefono = signal<string>('');
   cita_hora = signal<string>('');
@@ -136,7 +138,9 @@ export default class ReservaHistorialComponent implements OnInit {
   openEditReserva(data: any) {
     this.reserva_id.set(data.reserva_id);
     this.cliente_nombre.set(data.nombre_cliente);
-    this.cliente_mascota.set(data.nombre_mascota);
+    this.mascota_nombre.set(data.nombre_mascota);
+    this.mascota_especie.set(data.nombre_especie);
+    this.mascota_raza.set(data.nombre_raza);
     this.cita_hora.set(data.hora_cita);
     this.cita_fecha.set(data.fecha_cita);
     this.cliente_correo.set(data.cliente_correo);
@@ -152,7 +156,7 @@ export default class ReservaHistorialComponent implements OnInit {
     this.reserva_id.set(data.reserva_id);
     this.servicio_id.set(data.servicio_id);
     this.cliente_nombre.set(data.nombre_cliente);
-    this.cliente_mascota.set(data.nombre_mascota);
+    this.mascota_nombre.set(data.nombre_mascota);
     this.cliente_correo.set(data.cliente_correo);
     this.cliente_telefono.set(data.cliente_telefono);
 
@@ -327,10 +331,10 @@ export default class ReservaHistorialComponent implements OnInit {
       cliente_telefono : this.cliente_telefono(),
       cliente_correo : this.cliente_correo(),
       observaciones: this.cita_observaciones(),
-      nombre_mascota: this.cliente_mascota().toLocaleUpperCase()
+      nombre_mascota: this.mascota_nombre().toLocaleUpperCase()
     }
     // console.log('post: ', post);
-    if (this.cliente_mascota().length < 3) {
+    if (this.mascota_nombre().length < 3) {
       this.sweetAlertService.info('', 'Por favor digite un nombre de mascota mayor a tres caracteres')
     } else {
       this.veterinariaService.updReservarCita(post).subscribe({

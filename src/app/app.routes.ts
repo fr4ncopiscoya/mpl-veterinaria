@@ -40,22 +40,22 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/templates/admin/admin.component'),
         canActivate: [AuthGuard], // Solo si está logeado
         children: [
-            {
-                path: 'inicio',
-                loadComponent: () => import('./pages/dashboard/dashboard.component'),
-            },
+            // {
+            //     path: 'inicio',
+            //     loadComponent: () => import('./pages/dashboard/dashboard.component'),
+            // },
             {
                 path: 'historial',
                 loadComponent: () => import('./pages/admin/reserva-historial/reserva-historial.component'),
                 data: { title: 'HISTORIAL DE RESERVAS' }
             },
             {
-                path: '', redirectTo: 'inicio',
+                path: '', redirectTo: 'historial',
                 pathMatch: 'full'
             },
             {
                 path: '**',
-                redirectTo: 'inicio'
+                redirectTo: 'historial'
             }
         ]
     },

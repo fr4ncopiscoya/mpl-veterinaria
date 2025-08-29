@@ -10002,9 +10002,27 @@ a.ck.ck-button.ck-on:not(.ck-disabled):hover {
     padding: 12px 0 0
 }
 
-.gridjs-table {
+/* .gridjs-table {
     width: 100%
+} */
+
+.gridjs-table {
+    table-layout: fixed;
+    /* tabla no se ajusta al contenido */
+    width: 100%;
+    /* ocupa todo el ancho disponible */
 }
+
+td.gridjs-td {
+    border: 1px solid #e5e7eb;
+    padding: 12px 24px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 200px;
+    /* 👈 aquí limitas el ancho de la celda */
+}
+
 
 .gridjs-tbody,
 td.gridjs-td {
@@ -15766,12 +15784,5 @@ select:disabled {
     border: 1px solid #aaa;
     /* Borde opcional */
 }
-
-.td.gridjs-td {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-}
-
 
 /*# sourceMappingURL=app.min.css.map */

@@ -84,18 +84,27 @@
 </div>
 
 
-<app-modal #editarReserva [title]="'EDITAR RESERVA'" [size]="''" [bgcolor]="'bg-primary'">
+<app-modal #editarReserva [title]="'EDITAR RESERVA'" [size]="'modal-lg'" [bgcolor]="'bg-primary'">
 
     <div modal-body>
         <div class="d-flex flex-column gap-3">
             <div class="row">
-                <div class="col-6">
+                <div class="col-4">
                     <label for="name" class="form-label">Fecha Cita</label>
                     <input type="text" [value]="cita_fecha()" class="form-control" required disabled />
                 </div>
-                <div class="col-6">
+                <div class="col-4">
                     <label for="name" class="form-label">Hora Cita</label>
                     <input type="text" [value]="cita_hora()" class="form-control" required disabled />
+                </div>
+                <div class="col-4">
+                    <label for="country" class="form-label">Estado</label>
+                    <select class="form-select" id="area" [ngModel]="reserva_estado()"
+                        (ngModelChange)="reserva_estado.set($event)" required>
+                        <option *ngFor="let item of dataEstadoReserva()" [value]="item.estado_id">
+                            {{ item.estado_descri }}
+                        </option>
+                    </select>
                 </div>
             </div>
             <div class="row">
@@ -122,19 +131,21 @@
                 </div> -->
             </div>
             <div class="row">
-                <div class="col-6">
-                    <label for="name" class="form-label">Mascota</label>
-                    <input type="text" [value]="cliente_mascota()"
-                        (input)="cliente_mascota.set($any($event.target).value)" class="form-control" required />
+                <div class="col-4">
+                    <label for="name" class="form-label">Especie</label>
+                    <input type="text" [value]="mascota_especie()"
+                        (input)="mascota_especie.set($any($event.target).value)" class="form-control" required
+                        disabled />
                 </div>
-                <div class="col-6">
-                    <label for="country" class="form-label">Estado</label>
-                    <select class="form-select" id="area" [ngModel]="reserva_estado()"
-                        (ngModelChange)="reserva_estado.set($event)" required>
-                        <option *ngFor="let item of dataEstadoReserva()" [value]="item.estado_id">
-                            {{ item.estado_descri }}
-                        </option>
-                    </select>
+                <div class="col-4">
+                    <label for="name" class="form-label">Raza</label>
+                    <input type="text" [value]="mascota_raza()" (input)="mascota_raza.set($any($event.target).value)"
+                        class="form-control" required disabled />
+                </div>
+                <div class="col-4">
+                    <label for="name" class="form-label">Mascota</label>
+                    <input type="text" [value]="mascota_nombre()"
+                        (input)="mascota_nombre.set($any($event.target).value)" class="form-control" required />
                 </div>
             </div>
             <div class="row">
@@ -184,7 +195,7 @@
                 </div> -->
                 <div class="col-6">
                     <label for="name" class="form-label">Mascota</label>
-                    <input type="text" [value]="cliente_mascota()" class="form-control" required disabled />
+                    <input type="text" [value]="mascota_nombre()" class="form-control" required disabled />
                 </div>
                 <div class="col-6">
                     <label for="name" class="form-label">Telefono</label>
@@ -194,7 +205,7 @@
             <div class="row">
                 <div class="col-12">
                     <label for="name" class="form-label">Correo</label>
-                    <input type="text" [value]="cliente_correo()" class="form-control" required disabled/>
+                    <input type="text" [value]="cliente_correo()" class="form-control" required disabled />
                 </div>
             </div>
             <div class="row">
