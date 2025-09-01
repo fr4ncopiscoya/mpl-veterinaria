@@ -8,6 +8,7 @@ import { h } from 'gridjs';
 import { ModalComponent } from "../../../components/modal/modal.component";
 import { SweetAlertService } from '../../../services/sweet-alert.service';
 import { NiubizService } from '../../../services/niubiz.service';
+import { AuthService } from '../../../services/auth.service';
 
 interface EstadoReserva {
   estado_id: number;
@@ -26,6 +27,7 @@ export default class ReservaHistorialComponent implements OnInit {
   @ViewChild('extraPayment') extraPaymentModal!: ModalComponent;
 
   private niubizService = inject(NiubizService);
+  private authService = inject(AuthService);
 
   rowsReserva: {
     reserva_id: number;
@@ -267,30 +269,41 @@ export default class ReservaHistorialComponent implements OnInit {
       {
         name: "Acciones",
         formatter: (cell: string, row: any) => {
-          // 🔹 obtiene el ID desde la primera columna
           const reservaId = row.cells[0].data;
-
-          // 🔹 busca el objeto completo en this.dataRow
           const item = self.dataRow.find((r: any) => r.reserva_id === reservaId);
 
-          return h('div', { className: 'text-end d-flex gap-1' }, [
-            h('a', {
-              className: 'text-muted px-1 d-block viewlist-btn cursor-pointer',
-              title: 'Editar Reserva',
-              // onclick: () => console.log('reserva data: ', item) // ahora SI sale el objeto completo
-              onclick: () => self.openEditReserva(item)
-            }, h('i', { className: 'bi bi-pencil-fill' })),
+          const acciones: any[] = [];
 
-            h('a', {
-              className: 'text-muted px-1 d-block viewlist-btn cursor-pointer',
-              title: 'Pago Extra',
-              // onclick: () => console.log('reserva data: ', item) // ahora SI sale el objeto completo
-              onclick: () => self.openExtraPayment(item)
-            }, h('i', { className: 'bi bi-currency-dollar' })),
-          ]);
+          if(this.authService.hasPermission(['TESORERIA'])){
+            console.log('hola????????');
+            
+          }
+
+          // 👇 Solo ADMINISTRADOR y TESORERIA pueden editar
+          if (this.authService.hasPermission(['ADMINISTRADOR', 'VETERINARIO'])) {
+            acciones.push(
+              h('a', {
+                className: 'text-muted px-1 d-block viewlist-btn cursor-pointer',
+                title: 'Editar Reserva',
+                onclick: () => self.openEditReserva(item)
+              }, h('i', { className: 'bi bi-pencil-fill' }))
+            );
+          }
+
+          // 👇 Solo TESORERIA puede hacer pagos extra
+          if (this.authService.hasPermission(['TESORERIA'])) {
+            acciones.push(
+              h('a', {
+                className: 'text-muted px-1 d-block viewlist-btn cursor-pointer',
+                title: 'Pago Extra',
+                onclick: () => self.openExtraPayment(item)
+              }, h('i', { className: 'bi bi-currency-dollar' }))
+            );
+          }
+
+          return h('div', { className: 'text-end d-flex gap-1' }, acciones);
         }
       }
-
     ]);
 
     this.veterinariaService.getReservaCita(post).subscribe({
@@ -328,8 +341,8 @@ export default class ReservaHistorialComponent implements OnInit {
     const post = {
       reserva_id: this.reserva_id(),
       estado_id: this.reserva_estado(),
-      cliente_telefono : this.cliente_telefono(),
-      cliente_correo : this.cliente_correo(),
+      cliente_telefono: this.cliente_telefono(),
+      cliente_correo: this.cliente_correo(),
       observaciones: this.cita_observaciones(),
       nombre_mascota: this.mascota_nombre().toLocaleUpperCase()
     }

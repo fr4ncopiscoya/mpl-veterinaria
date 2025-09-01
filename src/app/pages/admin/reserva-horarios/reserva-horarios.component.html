@@ -1,1 +1,98 @@
-<p>reserva-horarios works!</p>
+<div class="row mb-sm-4 p-5">
+    <div class="col-md-3">
+        <button class="btn btn-primary" (click)="openBloqDate()"> BLOQUEAR FECHA </button>
+    </div>
+    <div class="col-md-3">
+        <button class="btn btn-primary" (click)="openBloqHour()"> BLOQUEAR HORA </button>
+    </div>
+    <div class="col-md-3">
+        <button class="btn btn-primary" (click)="openSetCampania()"> ASIGNAR CAMPAÑA </button>
+    </div>
+</div>
+
+
+<app-modal #bloqDate [title]="'BLOQUEAR FECHA'" [size]="''" [bgcolor]="'bg-primary'">
+
+    <div modal-body>
+        <div class="d-flex flex-column gap-3">
+            <!-- <div class="row"> -->
+            <div class="col-12">
+                <label for="name" class="form-label">Selecciona una fecha</label>
+                <input type="date" class="form-control" required />
+            </div>
+            <!-- <div class="row"> -->
+            <div class="col-12">
+                <label for="name" class="form-label">Observacion</label>
+                <textarea (input)="bfecha_motivo.set($any($event.target).value)" class="form-control"> </textarea>
+            </div>
+            <!-- </div> -->
+            <!-- </div> -->
+        </div>
+    </div>
+
+    <div modal-footer>
+        <button type="button" [ngClass]="'bg-primary'" class="btn w-sm btn-primary">PAGAR</button>
+    </div>
+</app-modal>
+
+<app-modal #bloqHour [title]="'BLOQUEAR HORARIO'" [size]="'modal-lg'" [bgcolor]="'bg-primary'">
+
+    <div modal-body>
+        <div class="d-flex flex-column gap-3">
+            <div class="row">
+                <div class="col-4">
+                    <label for="name" class="form-label">Selecciona una fecha</label>
+                    <input type="date" class="form-control" required />
+                </div>
+                <div class="col-4">
+                    <label for="name" class="form-label">Selecciona hora inicio</label>
+                    <input type="time" class="form-control" required />
+                </div>
+                <div class="col-4">
+                    <label for="name" class="form-label">Selecciona hora fin</label>
+                    <input type="time" class="form-control" required />
+                </div>
+            </div>
+            <div class="col-12">
+                <label for="name" class="form-label">Observacion</label>
+                <textarea (input)="bfecha_motivo.set($any($event.target).value)" class="form-control"> </textarea>
+            </div>
+        </div>
+    </div>
+
+    <div modal-footer>
+        <button type="button" [ngClass]="'bg-primary'" class="btn w-sm btn-primary">PAGAR</button>
+    </div>
+</app-modal>
+
+<app-modal #setCampania [title]="'ASIGNAR CAMPAÑA'" [size]="''" [bgcolor]="'bg-primary'">
+
+    <div modal-body>
+        <div class="d-flex flex-column gap-3">
+            <div class="col-12">
+                <label for="country" class="form-label">Servicios</label>
+                <select class="form-select" id="area" required>
+                    <option *ngFor="let servicio of dataServicios()" [value]="servicio.servicio_id">
+                        {{ servicio.servicio_descri }}
+                    </option>
+                </select>
+                <!-- <label for="name" class="form-label">Servicio</label>
+                    <input type="text" [value]="cita_servicio()" class="form-control" required disabled /> -->
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <label for="name" class="form-label">Selecciona una fecha</label>
+                    <input type="date" class="form-control" required />
+                </div>
+                <div class="col-6">
+                    <label for="name" class="form-label">Selecciona una hora</label>
+                    <input type="time" class="form-control" required />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div modal-footer>
+        <button type="button" [ngClass]="'bg-primary'" class="btn w-sm btn-primary">PAGAR</button>
+    </div>
+</app-modal>

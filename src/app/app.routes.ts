@@ -38,24 +38,37 @@ export const routes: Routes = [
     {
         path: 'admin',
         loadComponent: () => import('./pages/templates/admin/admin.component'),
-        canActivate: [AuthGuard], // Solo si está logeado
+        // canActivate: [AuthGuard],
         children: [
-            // {
-            //     path: 'inicio',
-            //     loadComponent: () => import('./pages/dashboard/dashboard.component'),
-            // },
+            {
+                path: 'inicio',
+                loadComponent: () => import('./pages/dashboard/dashboard.component'),
+            },
             {
                 path: 'historial',
                 loadComponent: () => import('./pages/admin/reserva-historial/reserva-historial.component'),
-                data: { title: 'HISTORIAL DE RESERVAS' }
+                canActivate: [AuthGuard],
+                data: {
+                    title: 'HISTORIAL DE RESERVAS',
+                    roles: ['ADMINISTRADOR','VETERINARIO', 'TESORERIA']
+                }
             },
             {
-                path: '', redirectTo: 'historial',
+                path: 'horarios',
+                loadComponent: () => import('./pages/admin/reserva-horarios/reserva-horarios.component'),   
+                canActivate: [AuthGuard],   
+                data: {
+                    title: 'BLOQUEAR FECHA Y HORA | ASIGNAR CAMPAÑA',
+                    roles: ['ADMINISTRADOR']
+                }
+            },
+            {
+                path: '', redirectTo: 'inicio',
                 pathMatch: 'full'
             },
             {
                 path: '**',
-                redirectTo: 'historial'
+                redirectTo: 'inicio'
             }
         ]
     },
