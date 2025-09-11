@@ -19,6 +19,7 @@ import { interval, Subscription } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { environment } from '../../../environments/environments';
 import { NiubizService } from '../../services/niubiz.service';
+import { OnlyNumbersDirective } from '../../shared/directives/onlynumbers.directive';
 
 // declare const VisanetCheckout: any;
 
@@ -71,6 +72,7 @@ interface DataRazas {
     MatButtonModule,
     DatePipe,
     UppercaseDirective,
+    OnlyNumbersDirective
   ],
   templateUrl: './reserva.component.html',
   // styleUrl: ,
@@ -100,7 +102,13 @@ export default class ReservaComponent implements OnInit {
 
   tipoDocumento = signal<number>(1);
   numDocCli = signal<string>('');
-  maxLenghDoc = signal<number>(7);
+  maxLenghDoc(): number {
+    const tipo = this.userFormGroup.get('tipdoc')?.value;
+    if (tipo === '1') return 8;  // DNI
+    if (tipo === '2') return 11; // Carnet Ext / RUC
+    return 20; // default
+  }
+
 
 
   dateFormGroup: FormGroup;
@@ -131,13 +139,22 @@ export default class ReservaComponent implements OnInit {
 
     this.userFormGroup = this.fb.group({
       tipdoc: ['', Validators.required],
-      numdoc: ['', Validators.required],
+      numdoc: ['', Validators.required], // validación dinámica (se ajusta abajo)
       nombres: [{ value: '', disabled: true }, Validators.required],
       apellidos: [{ value: '', disabled: true }, Validators.required],
       direccion: ['', Validators.required],
       correo: ['', [Validators.required, Validators.email]],
-      telefono: ['', [Validators.minLength(9), Validators.required]],
+      telefono: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/^\d+$/), // solo números
+          Validators.minLength(9),
+          Validators.maxLength(9), // Perú: exactamente 9 dígitos
+        ],
+      ],
     });
+
 
     this.userFormGroup.get('tipdoc')?.valueChanges.subscribe((tipo: number) => {
       this.changeTipoDocumento(tipo);
@@ -156,6 +173,30 @@ export default class ReservaComponent implements OnInit {
       this.getHorariosDisponibles(formatted);
       this.getServiciosDisponibles(formatted);
       this.dateFormGroup.get('time')?.reset();
+    });
+
+    this.userFormGroup.get('tipdoc')?.valueChanges.subscribe((tipdoc) => {
+      const numdocControl = this.userFormGroup.get('numdoc');
+
+      if (tipdoc == '1') {
+        numdocControl?.setValidators([
+          Validators.required,
+          Validators.pattern(/^\d+$/), // solo números
+          Validators.minLength(8),
+          Validators.maxLength(8),
+        ]);
+      } else if (tipdoc == '2') {
+        numdocControl?.setValidators([
+          Validators.required,
+          Validators.pattern(/^\d+$/),
+          Validators.minLength(11),
+          Validators.maxLength(11),
+        ]);
+      } else {
+        numdocControl?.setValidators([Validators.required]);
+      }
+
+      numdocControl?.updateValueAndValidity(); // actualizar validaciones
     });
   }
 
@@ -368,11 +409,11 @@ export default class ReservaComponent implements OnInit {
   changeTipoDocumento(value: number) {
     this.tipoDocumento.set(value);
 
-    if (value == 1) {
-      this.maxLenghDoc.set(8)
-    } else {
-      this.maxLenghDoc.set(9)
-    }
+    // if (value == 1) {
+    //   this.maxLenghDoc.set(8)
+    // } else {
+    //   this.maxLenghDoc.set(9)
+    // }
 
     this.userFormGroup.patchValue({
       numdoc: '',

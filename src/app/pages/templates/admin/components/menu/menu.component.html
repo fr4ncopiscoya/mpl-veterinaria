@@ -29,16 +29,16 @@
 
             <div id="two-column-menu">
             </div>
-          
+
 
 
             <ul class="navbar-nav" id="navbar-nav">
 
                 <li class="menu-title"><span data-key="t-menu">Menu</span></li>
                 <li class="nav-item">
-                    <a [routerLink]="['/admin/inicio']" routerLink="active" class="nav-link menu-link"> <i class="bi bi-speedometer2"></i> <span
-                            data-key="t-dashboard">Inicio</span> </a>
-                </li> 
+                    <a [routerLink]="['/admin/inicio']" routerLink="active" class="nav-link menu-link"> <i
+                            class="bi bi-speedometer2"></i> <span data-key="t-dashboard">Inicio</span> </a>
+                </li>
 
 
                 <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages">Admin</span></li>
@@ -46,17 +46,40 @@
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarAdmin" data-bs-toggle="collapse" role="button"
                         aria-expanded="false" aria-controls="sidebarAdmin">
-                        <i class="bi bi-lock-fill"></i> <span data-key="t-authentication">Reservas</span>
+                        <i class="bi bi-lock-fill"></i> <span data-key="t-authentication">Admin</span>
                     </a>
                     <div class="collapse menu-dropdown" id="sidebarAdmin">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a [routerLink]="['/admin/historial']" routerLinkActive="active" class="nav-link"
-                                    data-key="t-starter"> Historial</a>
+                                <a [routerLink]="['/admin/fechas']" routerLinkActive="active" class="nav-link"
+                                    data-key="t-starter"> Bloqueo Fechas</a>
                             </li>
                             <li class="nav-item">
                                 <a [routerLink]="['/admin/horarios']" routerLinkActive="active" class="nav-link"
-                                    data-key="t-starter"> Horarios</a>
+                                    data-key="t-starter"> Bloqueo Horas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a [routerLink]="['/admin/campanias']" routerLinkActive="active" class="nav-link"
+                                    data-key="t-starter"> Asignar Campañas</a>
+                            </li>
+                            <!-- <li class="nav-item">
+                                <a [routerLink]="['/pide/reniec']" routerLinkActive="active" class="nav-link"
+                                    data-key="t-starter"> Actualizar Credenciales Reniec </a>
+                            </li> -->
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#sidebarCitas" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="sidebarCitas">
+                        <i class="bi bi-lock-fill"></i> <span data-key="t-authentication">Reservas</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="sidebarCitas">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a [routerLink]="['/admin/historial']" routerLinkActive="active" class="nav-link"
+                                    data-key="t-starter"> Citas</a>
                             </li>
                             <!-- <li class="nav-item">
                                 <a [routerLink]="['/pide/reniec']" routerLinkActive="active" class="nav-link"
@@ -67,7 +90,7 @@
                 </li>
 
                 <!-- <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages">Pages</span></li> -->
-<!-- 
+                <!-- 
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarAuth" data-bs-toggle="collapse" role="button"
                         aria-expanded="false" aria-controls="sidebarAuth">

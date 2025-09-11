@@ -19,7 +19,7 @@ export class AuthGuard implements CanActivate {
     // 3. Si hay roles definidos, validar
     if (requiredRoles && requiredRoles.length > 0) {
       if (!this.auth.hasPermission(requiredRoles)) {
-        this.router.navigate(['/admin/inicio']);
+        this.router.navigate(['/login']);
         return false;
       }
     }

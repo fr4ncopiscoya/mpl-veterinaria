@@ -38,7 +38,7 @@ export const routes: Routes = [
     {
         path: 'admin',
         loadComponent: () => import('./pages/templates/admin/admin.component'),
-        // canActivate: [AuthGuard],
+        canActivate: [AuthGuard],
         children: [
             {
                 path: 'inicio',
@@ -54,11 +54,29 @@ export const routes: Routes = [
                 }
             },
             {
+                path: 'fechas',
+                loadComponent: () => import('./pages/admin/reserva-fechas/reserva-fechas.component'),   
+                canActivate: [AuthGuard],   
+                data: {
+                    title: 'BLOQUEAR FECHAS',
+                    roles: ['ADMINISTRADOR']
+                }
+            },
+            {
                 path: 'horarios',
                 loadComponent: () => import('./pages/admin/reserva-horarios/reserva-horarios.component'),   
                 canActivate: [AuthGuard],   
                 data: {
-                    title: 'BLOQUEAR FECHA Y HORA | ASIGNAR CAMPAÑA',
+                    title: 'BLOQUEAR HORARIOS',
+                    roles: ['ADMINISTRADOR']
+                }
+            },
+            {
+                path: 'campanias',
+                loadComponent: () => import('./pages/admin/reserva-campanias/reserva-campanias.component'),
+                canActivate: [AuthGuard],   
+                data: {
+                    title: 'ASIGNAR CAMPAÑA',
                     roles: ['ADMINISTRADOR']
                 }
             },

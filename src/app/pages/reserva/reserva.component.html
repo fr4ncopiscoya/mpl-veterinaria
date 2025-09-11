@@ -78,9 +78,9 @@
                             </mat-form-field>
                             <mat-form-field appearance="fill" class="w-100">
                                 <mat-label>N° Doc</mat-label>
-                                <input matInput formControlName="numdoc" [maxlength]="maxLenghDoc()" type="number"
-                                    #txtNumdoc (blur)="searchPersona(txtNumdoc.value)"
-                                    (keyup.enter)="searchPersona(txtNumdoc.value)">
+                                <input matInput formControlName="numdoc" [appOnlyNumbers]="maxLenghDoc()" #txtNumdoc
+                                    (blur)="searchPersona(txtNumdoc.value)"
+                                    (keyup.enter)="searchPersona(txtNumdoc.value)" />
                             </mat-form-field>
                             <mat-form-field appearance="fill" class="w-100">
                                 <mat-label>Nombres</mat-label>
@@ -100,7 +100,8 @@
                             </mat-form-field>
                             <mat-form-field appearance="fill" class="w-100">
                                 <mat-label>Telefono</mat-label>
-                                <input type="number" matInput formControlName="telefono">
+                                <input matInput formControlName="telefono" [appOnlyNumbers]="9" pattern="[0-9]*"
+                                    inputmode="numeric" />
                             </mat-form-field>
                         </div>
                         <div>
