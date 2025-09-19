@@ -20,17 +20,17 @@ export class AppComponent {
       this.loading = value;
     });
 
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationStart) {
-        this.spinnerService.show();
-        setTimeout(() => {
-          this.spinnerService.hide();
-        }, 2500);
-      }
-      // if (event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError) {
-      //   // Si quieres que termine apenas cargue, puedes quitar el setTimeout de arriba y solo dejar esto
-      //   this.spinnerService.hide();
-      // }
-    });
+    // this.router.events.subscribe(event => {
+    //   if (event instanceof NavigationStart) {
+    //     this.spinnerService.show();
+    //     setTimeout(() => {
+    //       this.spinnerService.hide();
+    //     }, 2500);
+    //   }
+    //   // if (event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError) {
+    //   //   // Si quieres que termine apenas cargue, puedes quitar el setTimeout de arriba y solo dejar esto
+    //   //   this.spinnerService.hide();
+    //   // }
+    // });
   }
 }

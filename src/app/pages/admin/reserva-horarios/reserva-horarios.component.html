@@ -1,4 +1,4 @@
-<div class="row mb-sm-4 p-5">
+<!-- <div class="row mb-sm-4 p-5">
     <div class="col-md-3">
         <button class="btn btn-primary" (click)="openBloqDate()"> BLOQUEAR FECHA </button>
     </div>
@@ -15,18 +15,14 @@
 
     <div modal-body>
         <div class="d-flex flex-column gap-3">
-            <!-- <div class="row"> -->
             <div class="col-12">
                 <label for="name" class="form-label">Selecciona una fecha</label>
                 <input type="date" class="form-control" required />
             </div>
-            <!-- <div class="row"> -->
             <div class="col-12">
                 <label for="name" class="form-label">Observacion</label>
                 <textarea (input)="bfecha_motivo.set($any($event.target).value)" class="form-control"> </textarea>
             </div>
-            <!-- </div> -->
-            <!-- </div> -->
         </div>
     </div>
 
@@ -76,8 +72,6 @@
                         {{ servicio.servicio_descri }}
                     </option>
                 </select>
-                <!-- <label for="name" class="form-label">Servicio</label>
-                    <input type="text" [value]="cita_servicio()" class="form-control" required disabled /> -->
             </div>
             <div class="row">
                 <div class="col-6">
@@ -95,4 +89,40 @@
     <div modal-footer>
         <button type="button" [ngClass]="'bg-primary'" class="btn w-sm btn-primary">GUARDAR</button>
     </div>
-</app-modal>
+</app-modal> -->
+
+<div class="row mb-sm-4">
+    <div class="col-2">
+        <label for="fecha" class="form-label">Selecciona una fecha</label>
+        <!-- <select class="form-control" [ngModel]="selectedDate">
+            <option *ngFor="let f of fechas" [value]="f.fecha">
+                {{ f.fecha }}
+            </option>
+        </select> -->
+    </div>
+    <div class="col-2">
+        <label for="name" class="form-label">Selecciona hora inicio</label>
+        <input type="time" class="form-control" required />
+    </div>
+    <div class="col-2">
+        <label for="name" class="form-label">Selecciona hora fin</label>
+        <input type="time" class="form-control" required />
+    </div>
+    <div class="col-6">
+        <label for="name" class="form-label">Motivo</label>
+        <input type="text" (input)="bloq_motivo.set($any($event.target).value)" class="form-control" required />
+    </div>
+</div>
+
+<div class="row mb-sm-4">
+    <div class="col-sm-2 w-auto">
+        <button type="button" class="btn btn-primary btn-label" (click)="fun_bloquearHorario()">
+            <i class="ri-search-line label-icon align-middle fs-16 me-2"></i> Enviar
+        </button>
+    </div>
+    <!-- <div class="col-sm-2">
+        <button type="button" class="btn btn-success btn-label" (click)="resetFields()">
+            <i class="ri-brush-2-line label-icon align-middle fs-16 me-2"></i> Limpiar
+        </button>
+    </div> -->
+</div>

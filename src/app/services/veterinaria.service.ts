@@ -21,11 +21,11 @@ export class VeterinariaService {
   getReniec(data: any): Observable<any> {
     return this.http.post(`${environment.apiBackend}/veterinaria/sel-reniec`, data);
   }
-
   getCarnetExtranjeria(data: any): Observable<any> {
     return this.http.post(`${environment.apiBackend}/veterinaria/sel-cextranjeria`, data);
   }
 
+  // ===== FECHAS, HORARIOS Y SERVICIOS DISPONIBLES
   getFechasDisponibles(data: any): Observable<any> {
     return this.http.post(`${environment.apiBackend}/veterinaria/sel-fechas`, data);
   }
@@ -35,9 +35,12 @@ export class VeterinariaService {
   getServiciosDisponibles(data: any): Observable<any> {
     return this.http.post(`${environment.apiBackend}/veterinaria/sel-servicios`, data);
   }
+
+  // ===========
   getRazas(data: any): Observable<any> {
     return this.http.post(`${environment.apiBackend}/veterinaria/sel-razas`, data);
   }
+
   getReservaCita(data: any): Observable<any> {
     return this.http.post(`${environment.apiBackend}/veterinaria/sel-reserva`, data);
   }
@@ -61,5 +64,16 @@ export class VeterinariaService {
   }
   getEstadoReserva(data: any): Observable<any> {
     return this.http.post(`${environment.apiBackend}/veterinaria/sel-estadoreserva`, data);
+  }
+
+  // BLOQUEAR HORARIOS, FECHAS y ASIGNAR CAMPAÑAS
+  insBloquearFechas(data: any): Observable<any> {
+    return this.http.post(`${environment.apiBackend}/veterinaria/ins-bloqfechas`, data);
+  };
+  insBloquearHorarios(data: any): Observable<any> {
+    return this.http.post(`${environment.apiBackend}/veterinaria/ins-bloqhorarios`, data);
+  }
+  insCampanias(data: any): Observable<any> {
+    return this.http.post(`${environment.apiBackend}/veterinaria/ins-campanias`, data);
   }
 }

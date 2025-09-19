@@ -279,7 +279,7 @@ export default class ReservaHistorialComponent implements OnInit {
             
           }
 
-          // 👇 Solo ADMINISTRADOR y TESORERIA pueden editar
+          // Solo ADMINISTRADOR y VETERINARIO pueden editar
           if (this.authService.hasPermission(['ADMINISTRADOR', 'VETERINARIO'])) {
             acciones.push(
               h('a', {
@@ -290,8 +290,8 @@ export default class ReservaHistorialComponent implements OnInit {
             );
           }
 
-          // 👇 Solo TESORERIA puede hacer pagos extra
-          if (this.authService.hasPermission(['TESORERIA'])) {
+          // Solo ADMINISTRADOR y TESORERIA puede hacer pagos extra
+          if (this.authService.hasPermission(['ADMINISTRADOR', 'TESORERIA'])) {
             acciones.push(
               h('a', {
                 className: 'text-muted px-1 d-block viewlist-btn cursor-pointer',

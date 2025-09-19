@@ -10,8 +10,8 @@ declare var VisanetCheckout: any;
 })
 export class NiubizService {
 
-    private merchantDEV = '456879852';
-    private merchantPRD = '651043487';
+    // private merchantID = '456879852'; // testing
+    private merchantID = '651043487'; // production
 
     // private endpoint = 'http://127.0.0.1:8000/niubiz';
     private endpoint = 'https://appsapi.muniplibre.gob.pe/niubiz'
@@ -101,7 +101,7 @@ export class NiubizService {
             method: 'POST',
             sessiontoken: sessionToken,
             channel: 'web',
-            merchantid: this.merchantPRD,
+            merchantid: this.merchantID,
             purchasenumber: purchaseNumber,
             amount: amount,
             expirationminutes: '10',

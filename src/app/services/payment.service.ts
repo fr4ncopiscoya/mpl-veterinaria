@@ -16,8 +16,8 @@ export interface PaymentPayload {
 })
 export class PaymentService {
   // Las URLs de tu API de Laravel
-  private apiUrl = 'https://appsapi.muniplibre.gob.pe/niubiz'; // URL base
-  // private apiUrl = 'http://127.0.0.1:8000/niubiz'; // URL base
+  private apiUrl = 'https://appsapi.muniplibre.gob.pe/niubiz'; // URL endpoint prod
+  // private apiUrl = 'http://127.0.0.1:8000/niubiz'; // URL endpoint dev
 
 
   constructor(private http: HttpClient) { }

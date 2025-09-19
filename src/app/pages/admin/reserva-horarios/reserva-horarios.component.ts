@@ -1,31 +1,61 @@
-import { Component, signal, ViewChild } from '@angular/core';
-import { ModalComponent } from "../../../components/modal/modal.component";
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataServicios } from '../../../interfaces/veterinaria.interface'
+import { VeterinariaService } from '../../../services/veterinaria.service';
 
 @Component({
   selector: 'app-reserva-horarios',
-  imports: [ModalComponent, CommonModule],
+  imports: [CommonModule],
   templateUrl: './reserva-horarios.component.html',
   styleUrl: './reserva-horarios.component.css'
 })
-export default class ReservaHorariosComponent {
+export default class ReservaHorariosComponent implements OnInit {
 
-  dataServicios = signal<DataServicios[]>([]);
-  bfecha_motivo = signal<string>('');
+  private veterinariaService = inject(VeterinariaService);
 
-  @ViewChild('bloqDate') bloquearFecha!: ModalComponent;
-  @ViewChild('bloqHour') bloquearHorario!: ModalComponent;
-  @ViewChild('setCampania') asignarCampania!: ModalComponent;
 
-  openBloqDate(){
-    this.bloquearFecha.open();
+  //Parametros bloquear fecha
+  bloq_fecha = signal<string>('');
+  bloq_horaini = signal<string>('');
+  bloq_horafin = signal<string>('');
+  bloq_motivo = signal<string>('');
+
+  ngOnInit(): void {
+    this.fun_getFechasReserva();
   }
-  openBloqHour(){
-    this.bloquearHorario.open();
+
+  fun_bloquearHorario() {
+    const post = {
+      bloq_fecha: this.bloq_fecha(),
+      bloq_horaini: this.bloq_horaini(),
+      bloq_horafin: this.bloq_horafin(),
+      bloq_motivo: this.bloq_motivo(),
+    }
+
+    this.veterinariaService.insBloquearHorarios(post).subscribe({
+      next: (res) => {
+        console.log('result: ', res);
+      },
+      error: (error) => {
+        console.log('error: ', error);
+
+      }
+    })
   }
-  openSetCampania(){
-    this.asignarCampania.open();
+
+  fun_getFechasReserva() {
+    this.veterinariaService.getFechasDisponibles('').subscribe({
+      next: (res) => {
+        console.log('result: ', res);
+      },
+      error: (error) => {
+        console.log('error: ', error);
+      }
+    })
+  }
+
+  fun_getHorarios() {
+
   }
 
 }
