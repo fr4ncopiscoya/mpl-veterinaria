@@ -100,16 +100,18 @@ export default class ReservaComponent implements OnInit {
   dataRazas = signal<any>('');
   // dataRazas = signal<string[]>([]);
 
+  persona_nombres = signal<string>('');
+  persona_apepat = signal<string>('');
+  persona_apemat = signal<string>('');
+
   tipoDocumento = signal<number>(1);
   numDocCli = signal<string>('');
   maxLenghDoc(): number {
     const tipo = this.userFormGroup.get('tipdoc')?.value;
     if (tipo === '1') return 8;  // DNI
-    if (tipo === '2') return 11; // Carnet Ext / RUC
+    if (tipo === '2') return 9; // Carnet Ext / RUC
     return 20; // default
   }
-
-
 
   dateFormGroup: FormGroup;
   userFormGroup: FormGroup;
@@ -189,8 +191,8 @@ export default class ReservaComponent implements OnInit {
         numdocControl?.setValidators([
           Validators.required,
           Validators.pattern(/^\d+$/),
-          Validators.minLength(11),
-          Validators.maxLength(11),
+          Validators.minLength(9),
+          Validators.maxLength(9),
         ]);
       } else {
         numdocControl?.setValidators([Validators.required]);
@@ -275,9 +277,9 @@ export default class ReservaComponent implements OnInit {
     const post = {
       tipdoc_id: rawUser.tipdoc,
       persona_numdoc: this.numDocCli(),
-      persona_nombre: rawUser.nombres,
-      persona_apepaterno: rawUser.apellidos?.split(' ')[0] || '',
-      persona_apematerno: rawUser.apellidos?.split(' ')[1] || '',
+      persona_nombre: this.persona_nombres(),
+      persona_apepaterno: this.persona_apepat(),
+      persona_apematerno: this.persona_apemat(),
       cliente_direccion: rawUser.direccion,
       cliente_correo: rawUser.correo,
       cliente_telefono: rawUser.telefono,
@@ -476,11 +478,19 @@ export default class ReservaComponent implements OnInit {
             const persona = result.datosPersona;
 
             this.dataReniec.set(persona);
+            this.persona_nombres.set(persona.prenombres);
+            this.persona_apepat.set(persona.apPrimer);
+            this.persona_apemat.set(persona.apSegundo);
 
-            const apellidos = `${persona.apPrimer ?? ''} ${persona.apSegundo ?? ''}`.trim();
+            console.log('persona-nombres: ', this.persona_nombres());
+            console.log('persona_apepat: ', this.persona_apepat());
+            console.log('persona_apemat: ', this.persona_apemat());
+            
+
+            const apellidos = `${this.persona_apepat() ?? ''} ${this.persona_apemat() ?? ''}`.trim();
 
             this.userFormGroup.patchValue({
-              nombres: persona.prenombres ?? '',
+              nombres: this.persona_nombres() ?? '',
               apellidos: apellidos,
               direccion: persona.direccion ?? '',
             });
@@ -520,6 +530,9 @@ export default class ReservaComponent implements OnInit {
       docconsulta: query
     }
     if (query.length === 9) {
+
+      this.numDocCli.set(query);
+
       this.veterinariaService.getCarnetExtranjeria(post).subscribe({
         next: (res) => {
           const codigo = res.codRespuesta;
@@ -536,8 +549,12 @@ export default class ReservaComponent implements OnInit {
           } else {
             const data = res.datosPersonales
             const apellidos = `${data.apepaterno ?? ''} ${data.apematerno ?? ''}`.trim();
-
             this.dataExtranjeria.set(data);
+
+            this.persona_nombres.set(data.nombres);
+            this.persona_apepat.set(data.apepaterno);
+            this.persona_apemat.set(data.apematerno);
+
 
             this.userFormGroup.patchValue({
               nombres: data.nombres ?? '',
