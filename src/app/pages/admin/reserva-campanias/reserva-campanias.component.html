@@ -1,1 +1,72 @@
-<p>reserva-campanias works!</p>
+<div class="row mb-sm-3">
+
+    <div class="col-2">
+        <label for="fecha" class="form-label">Selecciona una fecha</label>
+        <mat-form-field appearance="fill" class="w-100">
+            <mat-label>Selecciona una fecha</mat-label>
+            <input matInput [matDatepicker]="picker" [matDatepickerFilter]="filterDates" [value]="selectedDate()"
+                (dateChange)="selectedDate.set($event.value)" />
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+    </div>
+
+    <div class="col-2">
+        <label class="form-label">Selecciona hora inicio</label>
+        <mat-form-field appearance="fill" class="w-100">
+            <mat-label>Hora disponible</mat-label>
+            <mat-select [value]="bloq_horaini()" (selectionChange)="bloq_horaini.set($event.value)">
+                <mat-option *ngFor="let time of dataHorariosDisponibles()" [value]="time">
+                    {{ time }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="col-2">
+        <label class="form-label">Selecciona hora fin</label>
+        <mat-form-field appearance="fill" class="w-100">
+            <mat-label>Hora disponible</mat-label>
+            <mat-select [value]="bloq_horafin()" (selectionChange)="bloq_horafin.set($event.value)">
+                <mat-option *ngFor="let time of dataHorariosDisponibles()" [value]="time">
+                    {{ time }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div class="col-2">
+        <label class="form-label">Selecciona el Servicio</label>
+        <mat-form-field appearance="fill" class="w-100">
+            <mat-label>Servicio</mat-label>
+            <mat-select [value]="bloq_servicio_id()" (selectionChange)="bloq_servicio_id.set($event.value)">
+                <mat-option  *ngFor="let servicio of dataServicios()" [value]="servicio.servicio_id">
+                    <!-- {{servicio.servicio_descri}} -->
+                    {{servicio.servicio_descri}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div class="col-2">
+        <label class="form-label">Intervalo</label>
+        <mat-form-field appearance="fill" class="w-100">
+            <!-- <mat-label>Motivo</mat-label> -->
+            <input matInput appOnlyNumbers type="number" [value]="bloq_intervalo()"
+                (input)="bloq_intervalo.set($any($event.target).value)">
+        </mat-form-field>
+    </div>
+</div>
+
+
+<div class="row mb-sm-4">
+    <div class="col-sm-2 w-auto">
+        <button type="button" class="btn btn-primary btn-label" (click)="fun_asignarCampana()">
+            <i class="ri-search-line label-icon align-middle fs-16 me-2"></i> Enviar
+        </button>
+    </div>
+    <!-- <div class="col-sm-2">
+        <button type="button" class="btn btn-success btn-label" (click)="resetFields()">
+            <i class="ri-brush-2-line label-icon align-middle fs-16 me-2"></i> Limpiar
+        </button>
+    </div> -->
+</div>
