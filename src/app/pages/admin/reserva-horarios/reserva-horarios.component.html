@@ -16,11 +16,11 @@
     <div modal-body>
         <div class="d-flex flex-column gap-3">
             <div class="col-12">
-                <label for="name" class="form-label">Selecciona una fecha</label>
+                <label  class="form-label">Selecciona una fecha</label>
                 <input type="date" class="form-control" required />
             </div>
             <div class="col-12">
-                <label for="name" class="form-label">Observacion</label>
+                <label  class="form-label">Observacion</label>
                 <textarea (input)="bfecha_motivo.set($any($event.target).value)" class="form-control"> </textarea>
             </div>
         </div>
@@ -37,20 +37,20 @@
         <div class="d-flex flex-column gap-3">
             <div class="row">
                 <div class="col-4">
-                    <label for="name" class="form-label">Selecciona una fecha</label>
+                    <label  class="form-label">Selecciona una fecha</label>
                     <input type="date" class="form-control" required />
                 </div>
                 <div class="col-4">
-                    <label for="name" class="form-label">Selecciona hora inicio</label>
+                    <label  class="form-label">Selecciona hora inicio</label>
                     <input type="time" class="form-control" required />
                 </div>
                 <div class="col-4">
-                    <label for="name" class="form-label">Selecciona hora fin</label>
+                    <label  class="form-label">Selecciona hora fin</label>
                     <input type="time" class="form-control" required />
                 </div>
             </div>
             <div class="col-12">
-                <label for="name" class="form-label">Observacion</label>
+                <label  class="form-label">Observacion</label>
                 <textarea (input)="bfecha_motivo.set($any($event.target).value)" class="form-control"> </textarea>
             </div>
         </div>
@@ -75,11 +75,11 @@
             </div>
             <div class="row">
                 <div class="col-6">
-                    <label for="name" class="form-label">Selecciona una fecha</label>
+                    <label  class="form-label">Selecciona una fecha</label>
                     <input type="date" class="form-control" required />
                 </div>
                 <div class="col-6">
-                    <label for="name" class="form-label">Selecciona una hora</label>
+                    <label  class="form-label">Selecciona una hora</label>
                     <input type="time" class="form-control" required />
                 </div>
             </div>
@@ -91,26 +91,45 @@
     </div>
 </app-modal> -->
 
-<div class="row mb-sm-4">
+<div class="row mb-sm-3">
     <div class="col-2">
         <label for="fecha" class="form-label">Selecciona una fecha</label>
-        <!-- <select class="form-control" [ngModel]="selectedDate">
-            <option *ngFor="let f of fechas" [value]="f.fecha">
-                {{ f.fecha }}
-            </option>
-        </select> -->
+        <mat-form-field appearance="fill" class="w-100">
+            <mat-label>Selecciona una fecha</mat-label>
+            <input matInput [matDatepicker]="picker" [matDatepickerFilter]="filterDates" [value]="selectedDate()"
+                (dateChange)="selectedDate.set($event.value)" />
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
     </div>
     <div class="col-2">
-        <label for="name" class="form-label">Selecciona hora inicio</label>
-        <input type="time" class="form-control" required />
+        <label class="form-label">Selecciona hora inicio</label>
+        <mat-form-field appearance="fill" class="w-100">
+            <mat-label>Hora disponible</mat-label>
+            <mat-select [value]="bloq_horaini()" (selectionChange)="bloq_horaini.set($event.value)">
+                <mat-option *ngFor="let time of dataHorariosDisponibles()" [value]="time">
+                    {{ time }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
     </div>
     <div class="col-2">
-        <label for="name" class="form-label">Selecciona hora fin</label>
-        <input type="time" class="form-control" required />
+        <label class="form-label">Selecciona hora fin</label>
+        <mat-form-field appearance="fill" class="w-100">
+            <mat-label>Hora disponible</mat-label>
+            <mat-select [value]="bloq_horafin()" (selectionChange)="bloq_horafin.set($event.value)">
+                <mat-option *ngFor="let time of dataHorariosDisponibles()" [value]="time">
+                    {{ time }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
     </div>
     <div class="col-6">
-        <label for="name" class="form-label">Motivo</label>
-        <input type="text" (input)="bloq_motivo.set($any($event.target).value)" class="form-control" required />
+        <label class="form-label">Motivo</label>
+        <mat-form-field appearance="fill" class="w-100">
+            <!-- <mat-label>Motivo</mat-label> -->
+            <input matInput [value]="bloq_motivo()" (input)="bloq_motivo.set($any($event.target).value)">
+        </mat-form-field>
     </div>
 </div>
 

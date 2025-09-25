@@ -68,12 +68,12 @@ export class VeterinariaService {
 
   // BLOQUEAR HORARIOS, FECHAS y ASIGNAR CAMPAÑAS
   insBloquearFechas(data: any): Observable<any> {
-    return this.http.post(`${environment.apiBackend}/veterinaria/ins-bloqfechas`, data);
+    return this.http.post(`${environment.apiBackend}/veterinaria/ins-bloqfecha`, data);
   };
   insBloquearHorarios(data: any): Observable<any> {
-    return this.http.post(`${environment.apiBackend}/veterinaria/ins-bloqhorarios`, data);
+    return this.http.post(`${environment.apiBackend}/veterinaria/ins-bloqhorario`, data);
   }
   insCampanias(data: any): Observable<any> {
-    return this.http.post(`${environment.apiBackend}/veterinaria/ins-campanias`, data);
+    return this.http.post(`${environment.apiBackend}/veterinaria/ins-campania`, data);
   }
 }
