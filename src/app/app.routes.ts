@@ -59,7 +59,7 @@ export const routes: Routes = [
                 canActivate: [AuthGuard],   
                 data: {
                     title: 'BLOQUEAR FECHAS',
-                    roles: ['ADMINISTRADOR']
+                    roles: ['ADMINISTRADOR', 'VETERINARIO']
                 }
             },
             {
@@ -68,7 +68,7 @@ export const routes: Routes = [
                 canActivate: [AuthGuard],   
                 data: {
                     title: 'BLOQUEAR HORARIOS',
-                    roles: ['ADMINISTRADOR']
+                    roles: ['ADMINISTRADOR', 'VETERINARIO']
                 }
             },
             {
@@ -77,7 +77,7 @@ export const routes: Routes = [
                 canActivate: [AuthGuard],   
                 data: {
                     title: 'ASIGNAR CAMPAÑA',
-                    roles: ['ADMINISTRADOR']
+                    roles: ['ADMINISTRADOR', 'VETERINARIO']
                 }
             },
             {
