@@ -11,6 +11,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { VeterinariaService } from '../../../services/veterinaria.service';
 import { SweetAlertService } from '../../../services/sweet-alert.service';
 import { DataServicios } from '../../../interfaces/veterinaria.interface';
+import { GridService } from '../../../services/grid.service';
 
 interface HorarioDisponible {
   hora_disponible: string;
@@ -38,8 +39,14 @@ export default class ReservaFechasComponent implements OnInit{
 dataServicios = signal<DataServicios[]>([]);
 
 
-private veterinariaService = inject(VeterinariaService);
+  private veterinariaService = inject(VeterinariaService);
   private sweetAlertService = inject(SweetAlertService);
+  private gridService = inject(GridService);
+
+  DATATABLE_ID = 'table-card';
+  dataRow: any;
+  columnsReserva = signal<any[]>([]);
+
 
   constructor() {
     effect(() => {
@@ -78,6 +85,7 @@ private veterinariaService = inject(VeterinariaService);
 
   ngOnInit(): void {
     this.fun_getFechasReserva();
+    this.funlistarFecha();
   }
 
   fun_bloquearFecha() {
@@ -88,27 +96,21 @@ private veterinariaService = inject(VeterinariaService);
 
     console.log('post: ', post);
 
-    if (this.bloq_fecha() == '' || this.bloq_motivo() == '') {
-      this.sweetAlertService.info('', 'Completar todos los campos');
-    } else {
-      this.veterinariaService.insBloquearFechas(post).subscribe({
-        next: (res) => {
-          const estado = res[0].estado  // codigo estado
-          const mensaje = res[0].mensaje  // mensaje respuesta
-
-          if (estado == 0) {
-            this.sweetAlertService.error('', mensaje)
-          } else {
-            this.sweetAlertService.success('', mensaje);
-          }
-        },
-        error: (error) => {
-          console.log('error: ', error);
-          this.sweetAlertService.error('', error)
+    this.veterinariaService.insBloquearFechas(post).subscribe({
+      next: (res) => {
+        const estado = res[0].estado  // codigo estado
+        const mensaje = res[0].mensaje  // mensaje respuesta
+        if (estado == 0) {
+          this.sweetAlertService.error('', mensaje)
+        } else {
+          this.sweetAlertService.success('', mensaje);
         }
-      })
-    }
-
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.sweetAlertService.error('', error)
+      }
+    })
   }
 
   fun_getFechasReserva() {
@@ -119,6 +121,42 @@ private veterinariaService = inject(VeterinariaService);
       },
       error: (err) => console.error('Error cargando fechas:', err),
     });
+  }
+
+
+  isFormValid(): boolean {
+    return this.bloq_fecha() !== '' && this.bloq_motivo() !== '';
+  }
+
+  funlistarFecha (){
+    this.gridService.destroy(this.DATATABLE_ID);
+    const post = {};
+
+    this.columnsReserva.set([
+      {name:'Fecha'},
+      {name:'Motivo'},
+    ]);
+
+    this.veterinariaService.listBloquearFechas(post).subscribe({
+      next:(res:any[]) =>{
+        this.dataRow = res;
+        const data = res.map(r => [
+          r.fbloq_fecha,
+          r.fbloq_motivo
+        ]);
+
+        this.gridService.render(
+          this.DATATABLE_ID,
+          this.columnsReserva(),
+          data,
+          this.columnsReserva().length // cantidad real de columnas
+        );
+      },
+      error: (error) => {
+        console.log('Error Fechas bloqueados:', error);
+        this.sweetAlertService.error('', error);
+      },
+    })
   }
 
 }

@@ -135,8 +135,10 @@
 
 <div class="row mb-sm-4">
     <div class="col-sm-2 w-auto">
-        <button type="button" class="btn btn-primary btn-label" (click)="fun_bloquearHorario()">
-            <i class="ri-search-line label-icon align-middle fs-16 me-2"></i> Enviar
+        <button type="button" class="btn btn-primary btn-label" 
+        (click)="fun_bloquearHorario()"
+        [disabled]="!isFormValid()">
+            <i class="ri-save-3-fill label-icon fs-16 me-2"></i> Guardar
         </button>
     </div>
     <!-- <div class="col-sm-2">
@@ -144,4 +146,22 @@
             <i class="ri-brush-2-line label-icon align-middle fs-16 me-2"></i> Limpiar
         </button>
     </div> -->
+</div>
+
+
+
+<!-- GRID TABLE -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">RESULTADOS</h4>
+            </div><!-- end card header -->
+
+            <div class="card-body">
+                <div id="table-card" class="table-card"></div>
+            </div><!-- end card-body -->
+        </div><!-- end card -->
+    </div>
+    <!-- end col -->
 </div>

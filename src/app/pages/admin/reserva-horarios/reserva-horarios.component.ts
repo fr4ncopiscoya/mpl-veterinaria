@@ -12,6 +12,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatButtonModule } from '@angular/material/button';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SweetAlertService } from '../../../services/sweet-alert.service';
+import { GridService } from '../../../services/grid.service';
 
 interface HorarioDisponible {
   hora_disponible: string;
@@ -34,6 +35,12 @@ export default class ReservaHorariosComponent implements OnInit {
 
   private veterinariaService = inject(VeterinariaService);
   private sweetAlertService = inject(SweetAlertService);
+  private gridService = inject(GridService);
+  
+
+  DATATABLE_ID = 'table-card';
+  dataRow: any;
+  columnsReserva = signal<any[]>([]);
 
   constructor() {
     effect(() => {
@@ -82,6 +89,7 @@ export default class ReservaHorariosComponent implements OnInit {
 
   ngOnInit(): void {
     this.fun_getFechasReserva();
+    this.funlistarHorarios();
   }
 
   fun_bloquearHorario() {
@@ -93,28 +101,21 @@ export default class ReservaHorariosComponent implements OnInit {
     }
 
     console.log('post: ', post);
-
-    if (this.bloq_fecha() == '' || this.bloq_horaini() == '' || this.bloq_horafin() == '' || this.bloq_motivo() == '') {
-      this.sweetAlertService.info('', 'Completar todos los campos');
-    } else {
-      this.veterinariaService.insBloquearHorarios(post).subscribe({
-        next: (res) => {
-          const estado = res[0].estado  // codigo estado
-          const mensaje = res[0].mensaje  // mensaje respuesta
-
-          if (estado == 0) {
-            this.sweetAlertService.error('', mensaje)
-          } else {
-            this.sweetAlertService.success('', mensaje);
-          }
-        },
-        error: (error) => {
-          console.log('error: ', error);
-          this.sweetAlertService.error('', error)
+    this.veterinariaService.insBloquearHorarios(post).subscribe({
+      next: (res) => {
+        const estado = res[0].estado  // codigo estado
+        const mensaje = res[0].mensaje  // mensaje respuesta
+        if (estado == 0) {
+          this.sweetAlertService.error('', mensaje)
+        } else {
+          this.sweetAlertService.success('', mensaje);
         }
-      })
-    }
-
+      },
+      error: (error) => {
+        console.log('error: ', error);
+        this.sweetAlertService.error('', error)
+      }
+    })
   }
 
   fun_getFechasReserva() {
@@ -148,5 +149,44 @@ export default class ReservaHorariosComponent implements OnInit {
     });
   }
 
+  isFormValid():boolean {
+    return this.bloq_fecha() !== '' && this.bloq_horaini() !== '' && this.bloq_horafin() !== '' && this.bloq_motivo() !=='';
+  }
+
+  funlistarHorarios (){
+    this.gridService.destroy(this.DATATABLE_ID);
+    const post = {};
+
+    this.columnsReserva.set([
+      {name:'Fecha'},
+      {name:'Hora inicio'},
+      {name:'Hora fin'},
+      {name:'Motivo'},
+    ]);
+
+    this.veterinariaService.listBloquearHorarios(post).subscribe({
+      next:(res:any[]) =>{
+        this.dataRow = res;
+        const data = res.map(r => [
+          r.hbloq_fecha,
+          r.hbloq_horaini,
+          r.hbloq_horafin,
+          r.hbloq_motivo
+        ]);
+
+        this.gridService.render(
+          this.DATATABLE_ID,
+          this.columnsReserva(),
+          data,
+          this.columnsReserva().length // cantidad real de columnas
+        );
+      },
+      error: (error) => {
+        console.log('Error horario bloqueados:', error);
+        this.sweetAlertService.error('', error);
+      },
+    })
+
+  }
 
 }

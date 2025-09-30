@@ -115,10 +115,10 @@ export default class ReservaHistorialComponent implements OnInit {
 
   resetFields() {
     this.fechaInicio.set(''),
-      this.fechaFin.set(''),
-      this.fechaCita.set(''),
-      this.servicio.set(0),
-      this.estado.set(0)
+    this.fechaFin.set(''),
+    this.fechaCita.set(''),
+    this.servicio.set(0),
+    this.estado.set(0)
     this.gridService.destroy(this.DATATABLE_ID);
   }
 
@@ -335,6 +335,9 @@ export default class ReservaHistorialComponent implements OnInit {
         console.log('error: ', error);
       }
     });
+
+
+
   }
 
   updateReserva() {

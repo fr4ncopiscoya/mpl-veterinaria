@@ -10,6 +10,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
 import { VeterinariaService } from '../../../services/veterinaria.service';
 import { SweetAlertService } from '../../../services/sweet-alert.service';
+import { ModalComponent } from "../../../components/modal/modal.component";
+import { GridService } from '../../../services/grid.service';
 
 interface HorarioDisponible {
   hora_disponible: string;
@@ -31,7 +33,7 @@ interface DataServicios {
     MatNativeDateModule,
     ReactiveFormsModule,
     MatStepperModule,
-    MatButtonModule,],
+    MatButtonModule],
   templateUrl: './reserva-campanias.component.html',
   styleUrl: './reserva-campanias.component.css'
 })
@@ -39,8 +41,12 @@ export default class ReservaCampaniasComponent implements OnInit{
 
   
   private veterinariaService = inject(VeterinariaService);
+  private gridService = inject(GridService);
   private sweetAlertService = inject(SweetAlertService);
 
+  DATATABLE_ID = 'table-card';
+  dataRow: any;
+  columnsReserva = signal<any[]>([]);
   constructor() {
     effect(() => {
       const selected = this.selectedDate();
@@ -55,6 +61,13 @@ export default class ReservaCampaniasComponent implements OnInit{
         // const month = String(selected.getMonth() + 1).padStart(2, '0');
         // const day = String(selected.getDate()).padStart(2, '0');
         // const fecha = `${year}-${month}-${day}`;
+      const data = this.dataHistorialReserva();
+      const columns = this.columnsReserva();
+
+      if (data.length > 0) {
+        this.gridService.destroy(this.DATATABLE_ID);
+        this.gridService.render(this.DATATABLE_ID, columns, data, 5);
+      }
 
         this.bloq_fecha.set(fecha);
         this.fun_getHorarios(fecha);
@@ -66,6 +79,8 @@ export default class ReservaCampaniasComponent implements OnInit{
 
   }
 
+
+  dataHistorialReserva = signal<any[][]>([]);
   // almacenar - data 
   dataFechasDisponibles = signal<string[]>([]);
   dataHorariosDisponibles = signal<string[]>([]);
@@ -86,7 +101,6 @@ export default class ReservaCampaniasComponent implements OnInit{
     if (!date) return false;
     const dateStr = date.toLocaleDateString('sv-SE'); // YYYY-MM-DD
     // const dateStr = date.toISOString().split('T')[0]; // YYYY-MM-DD
-    console.log('dateSTR: ', dateStr);
     
     return this.dataFechasDisponibles().includes(dateStr);
   };
@@ -94,6 +108,7 @@ export default class ReservaCampaniasComponent implements OnInit{
 
   ngOnInit(): void {
     this.fun_getFechasReserva();
+    this.funListarCampana();
   }
 
   fun_getFechasReserva() {
@@ -155,33 +170,70 @@ export default class ReservaCampaniasComponent implements OnInit{
       p_horaini: this.bloq_horaini(),
       p_horafin: this.bloq_horafin(),
       p_intervalo:this.bloq_intervalo(),
-    }     
-    console.log('post: ', post);
-
-    if(this.bloq_servicio_id() == 0 || this.bloq_fecha() == ''|| 
-        this.bloq_horaini() == '' || this.bloq_horafin()== '' ||
-        this.bloq_intervalo() == 0){
-        this.sweetAlertService.info('', 'Completar todos los campos');
-      } else {
-        this.veterinariaService.insCampanias(post).subscribe({
-          next:(res) => {
-            const estado = res[0].estado  // codigo estado
-            const mensaje = res[0].mensaje  // mensaje respuesta
-            
-            if (estado == 0) {
-              this.sweetAlertService.error('', mensaje)
-            } else {
-              this.sweetAlertService.success('', mensaje);
-            }
-          },
-          error:(error)=>{
-            console.log('errror', error);
-            this.sweetAlertService.error('', error)
-
-          }
-        })
-    }
+    };
+    
+    this.veterinariaService.insCampanias(post).subscribe({
+      next:(res) => {
+        const estado = res[0].estado  // codigo estado
+        const mensaje = res[0].mensaje  // mensaje respuesta
+        
+        if (estado == 0) {
+          this.sweetAlertService.error('', mensaje)
+        } else {
+          this.sweetAlertService.success('', mensaje);
+        }
+      },
+      error:(error)=>{
+        console.log('errror', error);
+        this.sweetAlertService.error('', error)
+      }
+    })
   }
+
+  isFormValid():boolean {
+    return this.bloq_fecha() !== '' && this.bloq_horafin() !== '' && this.bloq_horaini() !== '' && this.bloq_servicio_id() !== 0 && this. bloq_intervalo() !== 0
+  }
+  funListarCampana() {
+    this.gridService.destroy(this.DATATABLE_ID);
+
+    const post = {}; // Si no necesitas filtros, lo puedes dejar vacío
+
+    this.columnsReserva.set([
+      { name: 'Fecha' },
+      { name: 'Hora Inicio' },
+      { name: 'Hora Fin' },
+      { name: 'Servicio Descripción' },
+      { name: 'Intervalo' },
+    ]);
+
+    this.veterinariaService.listCampanias(post).subscribe({
+      next: (res: any[]) => {
+        console.log('res-campania: ', res);
+
+        this.dataRow = res;
+        const data = res.map(r => [
+          r.hcamp_fecha,
+          r.hcamp_horafin,
+          r.hcamp_horaini,
+          r.servicio_descri,
+          r.hcamp_duracion,
+        ]);
+
+        this.gridService.render(
+          this.DATATABLE_ID,
+          this.columnsReserva(),
+          data,
+          this.columnsReserva().length // cantidad real de columnas
+        );
+      },
+      error: (error) => {
+        console.log('Error listando campaña:', error);
+        this.sweetAlertService.error('', error);
+      },
+    });
+  }
+
+
 }
 
 

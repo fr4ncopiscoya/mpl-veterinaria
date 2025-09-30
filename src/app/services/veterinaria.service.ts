@@ -70,10 +70,27 @@ export class VeterinariaService {
   insBloquearFechas(data: any): Observable<any> {
     return this.http.post(`${environment.apiBackend}/veterinaria/ins-bloqfecha`, data);
   };
+
+  listBloquearFechas(data: any): Observable<any> {
+    return this.http.post(`${environment.apiBackend}/veterinaria/sel-bloqfecha`, data);
+  };
+
+  listBloquearHorarios(data: any): Observable<any> {
+    return this.http.post(`${environment.apiBackend}/veterinaria/sel-bloqhorario`, data);
+  }
+
   insBloquearHorarios(data: any): Observable<any> {
     return this.http.post(`${environment.apiBackend}/veterinaria/ins-bloqhorario`, data);
   }
+
   insCampanias(data: any): Observable<any> {
     return this.http.post(`${environment.apiBackend}/veterinaria/ins-campania`, data);
   }
+
+  listCampanias(data:any): Observable<any> {
+    return this.http.post(`${environment.apiBackend}/veterinaria/sel-campania`, data);
+  }
+
+
+
 }
